@@ -16,6 +16,10 @@ pub struct HomeworkAssignment {
     pub year_level: String,
     pub due_at: Option<String>,
     pub instructions_md: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub student_printable_md: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub teacher_rubric_md: Option<String>,
     #[serde(default)]
     pub attachments: Vec<String>,
     #[serde(default = "default_allow_games")]
@@ -56,6 +60,14 @@ pub struct HomeworkSubmission {
     pub school_id: String,
     pub class_id: String,
     pub assignment_id: String,
+    #[serde(default)]
+    pub assignment_title: Option<String>,
+    #[serde(default)]
+    pub assignment_subject: Option<String>,
+    #[serde(default)]
+    pub assignment_year_level: Option<String>,
+    #[serde(default)]
+    pub assignment_instructions_md: Option<String>,
     pub student_id: String,
     pub student_name: String,
     pub submitted_at: String,
@@ -87,6 +99,12 @@ pub struct SubmissionSummary {
     pub ai_feedback: Option<String>,
 }
 
+#[derive(Debug, Clone)]
+pub struct LoadedSubmission {
+    pub path: PathBuf,
+    pub submission: HomeworkSubmission,
+}
+
 pub fn export_pack_template(base: &Path, school_id: &str, class_id: &str) -> io::Result<PathBuf> {
     let pack = HomeworkPack {
         version: "1.0".to_string(),
@@ -100,6 +118,8 @@ pub fn export_pack_template(base: &Path, school_id: &str, class_id: &str) -> io:
             year_level: "7".to_string(),
             due_at: None,
             instructions_md: "Add your instructions here.\n- Question 1\n- Question 2".to_string(),
+            student_printable_md: None,
+            teacher_rubric_md: None,
             attachments: vec![],
             allow_games: false,
             allow_ai_premark: true,
@@ -155,7 +175,7 @@ pub fn load_pack_from_file(path: &Path) -> io::Result<HomeworkPack> {
     let contents = fs::read_to_string(path)?;
     let pack: HomeworkPack = serde_json::from_str(&contents)
         .map_err(|e| io::Error::new(io::ErrorKind::Other, format!("pack parse error: {e}")))?;
-    Ok(pack)
+    Ok(normalize_pack(pack))
 }
 
 pub fn find_latest_pack(base: &Path) -> io::Result<Option<(PathBuf, HomeworkPack)>> {
@@ -183,6 +203,7 @@ pub fn find_latest_pack(base: &Path) -> io::Result<Option<(PathBuf, HomeworkPack
         let contents = fs::read_to_string(&path)?;
         let pack: HomeworkPack = serde_json::from_str(&contents)
             .map_err(|e| io::Error::new(io::ErrorKind::Other, format!("pack parse error: {e}")))?;
+        let pack = normalize_pack(pack);
         let ts = pack_timestamp(&pack, &entry.metadata().ok());
 
         match &newest {
@@ -206,6 +227,41 @@ pub fn save_submission_with_answers(
     base: &Path,
     settings: &Settings,
     assignment_id: &str,
+    answers_text: &str,
+    attachments: &[String],
+) -> io::Result<PathBuf> {
+    save_submission_with_snapshot(
+        base,
+        settings,
+        assignment_id,
+        None,
+        answers_text,
+        attachments,
+    )
+}
+
+pub fn save_submission_for_assignment(
+    base: &Path,
+    settings: &Settings,
+    assignment: &HomeworkAssignment,
+    answers_text: &str,
+    attachments: &[String],
+) -> io::Result<PathBuf> {
+    save_submission_with_snapshot(
+        base,
+        settings,
+        &assignment.id,
+        Some(assignment),
+        answers_text,
+        attachments,
+    )
+}
+
+fn save_submission_with_snapshot(
+    base: &Path,
+    settings: &Settings,
+    assignment_id: &str,
+    assignment: Option<&HomeworkAssignment>,
     answers_text: &str,
     attachments: &[String],
 ) -> io::Result<PathBuf> {
@@ -255,6 +311,10 @@ pub fn save_submission_with_answers(
         school_id: "school".to_string(),
         class_id,
         assignment_id: assignment_id.to_string(),
+        assignment_title: assignment.map(|assignment| assignment.title.clone()),
+        assignment_subject: assignment.map(|assignment| assignment.subject.clone()),
+        assignment_year_level: assignment.map(|assignment| assignment.year_level.clone()),
+        assignment_instructions_md: assignment.map(|assignment| assignment.instructions_md.clone()),
         student_id: student_id.clone(),
         student_name: student_name.clone(),
         submitted_at: iso_now(),
@@ -281,6 +341,28 @@ impl HomeworkSubmission {
 }
 
 pub fn load_submission_summaries(base: &Path) -> io::Result<Vec<SubmissionSummary>> {
+    let submissions = load_completed_submissions(base)?;
+    let mut out = Vec::new();
+
+    for record in submissions {
+        let sub = record.submission;
+        let ai_score = sub.ai_premark.as_ref().and_then(|p| p.score);
+        let ai_feedback = sub.ai_premark.as_ref().and_then(|p| p.feedback.clone());
+        out.push(SubmissionSummary {
+            assignment_id: sub.assignment_id.clone(),
+            student_name: sub.student_name.clone(),
+            student_id: sub.student_id.clone(),
+            submitted_at: sub.submitted_at.clone(),
+            score: sub.score_field(),
+            ai_score,
+            ai_feedback,
+        });
+    }
+
+    Ok(out)
+}
+
+pub fn load_completed_submissions(base: &Path) -> io::Result<Vec<LoadedSubmission>> {
     let dir = base.join("homework").join("completed");
     let mut out = Vec::new();
     if !dir.exists() {
@@ -298,16 +380,9 @@ pub fn load_submission_summaries(base: &Path) -> io::Result<Vec<SubmissionSummar
             Err(_) => continue,
         };
         if let Ok(sub) = serde_json::from_str::<HomeworkSubmission>(&contents) {
-            let ai_score = sub.ai_premark.as_ref().and_then(|p| p.score);
-            let ai_feedback = sub.ai_premark.as_ref().and_then(|p| p.feedback.clone());
-            out.push(SubmissionSummary {
-                assignment_id: sub.assignment_id.clone(),
-                student_name: sub.student_name.clone(),
-                student_id: sub.student_id.clone(),
-                submitted_at: sub.submitted_at.clone(),
-                score: sub.score_field(),
-                ai_score,
-                ai_feedback,
+            out.push(LoadedSubmission {
+                path: path.clone(),
+                submission: sub,
             });
         }
     }
@@ -428,7 +503,10 @@ fn sync_homework_packs_from_repo(base: &Path) -> io::Result<()> {
     }
 
     if copied > 0 {
-        eprintln!("[homework] Copied {copied} sample pack(s) into {}", target.display());
+        eprintln!(
+            "[homework] Copied {copied} sample pack(s) into {}",
+            target.display()
+        );
     }
     Ok(())
 }
@@ -478,4 +556,92 @@ fn simple_premark(text: &str) -> AiPremark {
         score: Some(score),
         feedback: Some(feedback),
     }
+}
+
+fn normalize_pack(mut pack: HomeworkPack) -> HomeworkPack {
+    let mut merged: Vec<HomeworkAssignment> = Vec::new();
+
+    for assignment in pack.assignments.drain(..) {
+        let assignment = normalize_assignment(assignment);
+        if let Some(existing) = merged.iter_mut().find(|current| {
+            current.id == assignment.id
+                && current.title == assignment.title
+                && current.subject == assignment.subject
+                && current.year_level == assignment.year_level
+        }) {
+            merge_assignment(existing, assignment);
+        } else {
+            merged.push(assignment);
+        }
+    }
+
+    pack.assignments = merged;
+    pack
+}
+
+fn normalize_assignment(mut assignment: HomeworkAssignment) -> HomeworkAssignment {
+    assignment.student_printable_md = assignment
+        .student_printable_md
+        .take()
+        .and_then(|text| clean_optional_markdown_section(&text));
+    assignment.teacher_rubric_md = assignment
+        .teacher_rubric_md
+        .take()
+        .and_then(|text| clean_optional_markdown_section(&text));
+    assignment.attachments = dedupe_strings(assignment.attachments);
+    assignment
+}
+
+fn merge_assignment(existing: &mut HomeworkAssignment, incoming: HomeworkAssignment) {
+    if existing.instructions_md.trim().is_empty() && !incoming.instructions_md.trim().is_empty() {
+        existing.instructions_md = incoming.instructions_md.clone();
+    }
+    if existing.student_printable_md.is_none() && incoming.student_printable_md.is_some() {
+        existing.student_printable_md = incoming.student_printable_md.clone();
+    }
+    if existing.teacher_rubric_md.is_none() && incoming.teacher_rubric_md.is_some() {
+        existing.teacher_rubric_md = incoming.teacher_rubric_md.clone();
+    }
+    if existing.due_at.is_none() && incoming.due_at.is_some() {
+        existing.due_at = incoming.due_at.clone();
+    }
+    if existing.max_score.is_none() && incoming.max_score.is_some() {
+        existing.max_score = incoming.max_score;
+    }
+    existing.allow_games = existing.allow_games && incoming.allow_games;
+    existing.allow_ai_premark = existing.allow_ai_premark || incoming.allow_ai_premark;
+
+    let mut combined = existing.attachments.clone();
+    combined.extend(incoming.attachments);
+    existing.attachments = dedupe_strings(combined);
+}
+
+fn clean_optional_markdown_section(text: &str) -> Option<String> {
+    let cleaned = text
+        .lines()
+        .filter(|line| !line.trim_start().starts_with("```"))
+        .collect::<Vec<_>>()
+        .join("\n")
+        .trim()
+        .to_string();
+
+    if cleaned.is_empty() {
+        None
+    } else {
+        Some(cleaned)
+    }
+}
+
+fn dedupe_strings(items: Vec<String>) -> Vec<String> {
+    let mut out = Vec::new();
+    for item in items {
+        let trimmed = item.trim();
+        if trimmed.is_empty() {
+            continue;
+        }
+        if !out.iter().any(|existing: &String| existing == trimmed) {
+            out.push(trimmed.to_string());
+        }
+    }
+    out
 }

@@ -1,0 +1,5 @@
+[env]
+# llama-cpp-sys-2 builds llama.cpp via CMake. On some Windows setups CMake may try a future
+# Visual Studio generator (e.g. "Visual Studio 18 2026") and fail. Pin a known-good generator.
+CMAKE_GENERATOR = "Visual Studio 17 2022"
+

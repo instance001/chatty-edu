@@ -62,6 +62,10 @@ pub struct Settings {
     pub student: StudentProfile,
     pub janet: JanetConfig,
     pub model: ModelConfig,
+    #[serde(default)]
+    pub bookkeeper_model_name: String,
+    #[serde(default)]
+    pub bookkeeper_model_path: String,
     pub voice: VoiceConfig,
     pub game: GameConfig,
     #[serde(default)]
@@ -114,10 +118,17 @@ pub fn ensure_base_folders(base: &Path) -> io::Result<()> {
         base.join("homework"),
         base.join("homework").join("assigned"),
         base.join("homework").join("completed"),
+        base.join("homework").join("outgoing"),
+        base.join("homework").join("marking"),
+        base.join("homework").join("printables"),
+        base.join("homework").join("rubrics"),
         base.join("revision"),
+        base.join("revision").join("notes"),
+        base.join("revision").join("past_papers"),
         base.join("modules"),
         base.join("logs"),
         base.join("config"),
+        base.join("config").join("bookkeeper"),
         base.join("runtime"),
         base.join("themes"),
         base.join("models"),
@@ -152,7 +163,7 @@ pub fn load_or_init_settings(base: &Path) -> io::Result<Settings> {
     }
 
     let settings = Settings {
-        version: "0.2.0".to_string(),
+        version: "0.5.0".to_string(),
         base_path: base.to_string_lossy().to_string(),
         mode: "gui".to_string(),
         default_year_level: "year_3".to_string(),
@@ -170,7 +181,8 @@ pub fn load_or_init_settings(base: &Path) -> io::Result<Settings> {
             enabled: true,
             block_swears: true,
             block_mature_topics: true,
-            fallback_message: "Let's switch topics. I'm here for school-safe chat and study tips.".to_string(),
+            fallback_message: "Let's switch topics. I'm here for school-safe chat and study tips."
+                .to_string(),
         },
         model: ModelConfig {
             name: "phi-mini-placeholder".to_string(),
@@ -179,8 +191,10 @@ pub fn load_or_init_settings(base: &Path) -> io::Result<Settings> {
                 .join("model.gguf")
                 .to_string_lossy()
                 .to_string(),
-            max_tokens: 256,
+            max_tokens: 512,
         },
+        bookkeeper_model_name: String::new(),
+        bookkeeper_model_path: String::new(),
         voice: VoiceConfig {
             enabled: false,
             engine: "os_tts".to_string(),

@@ -137,13 +137,13 @@ fn ensure_builtin_modules(modules_root: &Path) -> io::Result<()> {
         "homework_assignments",
         ModuleManifest {
             id: "homework_assignments".to_string(),
-            title: "Homework & Revision".to_string(),
-            description: Some("View homework questions and revision tips".to_string()),
+            title: "Revision".to_string(),
+            description: Some("Practice from completed work and past papers".to_string()),
             version: Some("1.0.0".to_string()),
             author: Some("Chatty-EDU".to_string()),
             roles: vec!["teacher".to_string(), "student".to_string()],
             entry: ModuleEntry::BuiltinPanel {
-                target: "homework_assignments".to_string(),
+                target: "revision_workspace".to_string(),
             },
             icon: None,
             permissions: vec![],
@@ -153,16 +153,22 @@ fn ensure_builtin_modules(modules_root: &Path) -> io::Result<()> {
     Ok(())
 }
 
-fn ensure_module(modules_root: &Path, folder_name: &str, manifest: ModuleManifest) -> io::Result<()> {
+fn ensure_module(
+    modules_root: &Path,
+    folder_name: &str,
+    manifest: ModuleManifest,
+) -> io::Result<()> {
     let folder = modules_root.join(folder_name);
     let manifest_path = folder.join("module.json");
-    if manifest_path.exists() {
-        return Ok(());
-    }
-
     fs::create_dir_all(&folder)?;
     let json = serde_json::to_string_pretty(&manifest)?;
-    fs::write(&manifest_path, json)?;
+    let should_write = match fs::read_to_string(&manifest_path) {
+        Ok(existing) => existing != json,
+        Err(_) => true,
+    };
+    if should_write {
+        fs::write(&manifest_path, json)?;
+    }
     Ok(())
 }
 

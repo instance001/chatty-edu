@@ -1,4 +1,4 @@
-# Chatty-EDU v0.4
+# Chatty-EDU v0.5.0
 
 Offline, local-first learning assistant for schools. No cloud, no accounts, no tracking. Ships as a single Rust binary with an egui desktop shell (Windows first) plus a CLI mode. Licensed under AGPLv3.
 
@@ -11,39 +11,69 @@ Designed for schools and boards:
 - Districts can drop in their preferred models; documentation includes guidance for recommended small models, which can be replaced as needed.
 - Works without internet; external processes are disabled unless explicitly allowed.
 
-Design intent and boundaries: see `DESIGN_INTENT.md`. Public-safe sample packs and submission templates live in `resources/`.
+Design intent and boundaries: see `design_intent.md`. Public-safe sample packs and submission templates live in `resources/`.
 
-## What's new in v0.4
-- Local CPU models: drop a GGUF file into `data/models/`, pick it via File ? Models, and chat without Ollama.
-- Teacher lock: PIN-gated teacher dashboard (default PIN 0000), changeable PIN, and secret question/answer for recovery; student view is default.
-- AI pre-mark now uses the selected local model.
-- Homework helper: module tab includes a hints-only tutor tied to the selected assignment (configurable by teacher).
-- GUI parity: teacher menu mirrors CLI (import/export packs, rescan, class/free modes, games on/off, submissions summary).
-- Docs and manuals refreshed for zero-knowledge setup.
+Docs:
+- `student_user_manual.md`
+- `teacher_user_manual.md`
+- `it_deployment_guide.md`
+- `security_privacy_statement.md`
+- `design_intent.md`
+- `GLOSSARY.md`
+- `CHANGELOG.md`
+
+## Current highlights
+- Markdown-first homework packs: author `*.md` in `homework/outgoing/` and transcribe to JSON packs in `homework/assigned/`.
+- Marking exports: convert `submission_*.json` into `homework/marking/marking_*.md` for review and marking.
+- Paper workflow: optional `### Student Printable` and `### Rubric` or `### Marking Guide` sections in pack Markdown, plus exports to `homework/printables/` and `homework/rubrics/`.
+- Teacher Dashboard AI helper: optionally draft a pack `.md` using the local model, then save and transcribe it.
+- Tri-helix memory surfaces: Chat includes `Chatty's thoughts` on the left for current-session context, `Memory jogger` on the right for persistent recent-session summaries, and a teacher-only Bookkeeper log search view behind the Teacher PIN.
+- Homework-aware chat guardrails: both the Homework hint helper and main Chat intercept active assignment questions and steer the model toward hints instead of answers.
+- Student-facing homework context: Home shows the selected assignment, worksheet or handout content, text attachment previews when available, the submission flow, and a chat mirror.
+- Separate Revision workflow: Revision pulls from completed homework, keeps revision notes or progress under `revision/notes/`, supports imported past papers under `revision/past_papers/`, and uses a looser revision helper than live homework.
+- Home tab chat mirror: students can keep working on Home while still seeing the latest chat exchange at the bottom of the page.
+- ECG window: a small top-right activity trace acts as a transparency and trust feature, showing visible local activity using Windows hardware counters with GPU-first fallback to CPU.
+- Pack parsing is forgiving around year or grade terminology: `year_level` is canonical, but Markdown import or transcribe also accepts `year`, `year level`, `grade`, `grade level`, and `year group`.
+- Automatic model role selection: on boot, Chatty-EDU scans `data/models/`, gives the largest valid GGUF to the main chat role, gives the smallest to the Bookkeeper role when 2+ models are present, and falls back to a friendly setup message when no model is available.
+- Plain-text-safe rendering: model output is normalized before display so unsupported Unicode, prompt-template markers, and odd table characters degrade into readable text instead of broken glyphs.
+- CLI parity: teacher console can `generate_pack_md`, `transcribe_outgoing`, and `convert_submissions_to_md`.
+- Easier builds: local-model support is optional with `cargo build --no-default-features`.
 
 ## Project layout (auto-created under `./data` or `--base-path`)
-- `config/` – settings, UI state
-- `homework/assigned/` – homework packs (`homework_pack_*.json`)
-- `homework/completed/` – submissions (`submission_*.json`)
-- `modules/` – module manifests (built-in Homework Dashboard is auto-generated)
-- `themes/` – active theme + presets
-- `models/` – drop offline GGUF model files; select via File → Models
-- `runtime/`, `logs/`, `revision/`, `ide/` – reserved for expansion
+- `config/` - settings, UI state, and Bookkeeper memory files
+- `config/bookkeeper/` - `cold_log.jsonl` plus persistent `memory_jogger.txt`
+- `homework/outgoing/` - teacher-authored packs in Markdown (`*.md`) to be transcribed into `homework/assigned/`
+- `homework/assigned/` - homework packs (`homework_pack_*.json`)
+- `homework/completed/` - submissions (`submission_*.json`)
+- `homework/marking/` - marking sheets exported as Markdown from student submissions (`marking_*.md`)
+- `homework/printables/` - student printables exported as Markdown (`student_*.md`)
+- `homework/rubrics/` - teacher rubrics or marking guides exported as Markdown (`rubric_*.md`)
+- `modules/` - module manifests (built-in Homework Dashboard and Revision manifests are auto-generated)
+- `themes/` - active theme plus presets
+- `models/` - drop offline GGUF model files here; select via File -> Models
+- `revision/notes/` - saved revision notes or progress
+- `revision/past_papers/` - imported past papers and teacher revision materials
+- `runtime/`, `logs/`, `ide/` - reserved for expansion
 
 ## Prereqs
 - Rust toolchain (`https://rustup.rs`).
-- LLVM/Clang for `llama_cpp` (set `LIBCLANG_PATH` to your LLVM `bin` on Windows) so the local-model crate can build.
+- Local model builds (default) compile llama.cpp via CMake, so you also need CMake and a C or C++ toolchain.
+- To build without the local model backend: `cargo build --no-default-features`.
 
-## Models (bundled + swap-in)
-- Model binaries are not included in the repo; drop an approved GGUF into `data/models/` (or your chosen `--base-path`) and select it via File ? Models.
-- Model-agnostic: drop in your preferred GGUF models and select them via File → Models; districts are expected to use their approved models.
-- Large models may exceed current runtime limits (e.g., GPT-OSS 20B failed to load); better large-model handling is planned.
-- Model guidance/attribution: see `resources/models/` (e.g., `resources/models/qwen/README.md`) for supported third-party variants and licensing notes; no weights are shipped.
+## Models (bundled plus swap-in)
+- Model binaries are not included in the repo; drop an approved GGUF into `data/models/` (or your chosen `--base-path`) and select it via File -> Models.
+- Model-agnostic: drop in your preferred GGUF models and select them via File -> Models; districts are expected to use their approved models.
+- At startup, Chatty-EDU auto-scans `data/models/`: the largest valid GGUF becomes the main AI, the smallest becomes the Bookkeeper role when 2+ models exist, and a single-model install keeps Bookkeeper in keyword-only mode.
+- If no GGUF is present, the app shows a friendly "drop a GGUF into `data/models/` to get started" message instead of a raw path error.
+- The local model runs in an internal worker process so incompatible GGUFs fail with an error instead of hard-crashing the app.
+- Very large models may still be slow or exceed RAM on school devices; prefer smaller GGUFs.
+- Model guidance and attribution: see `resources/models/` (for example `resources/models/qwen/README.md`) for supported third-party variants and licensing notes; no weights are shipped.
 
 ## Build and run
 ```bash
 cargo build
-cargo build --release   # release binary at target/release/chatty-edu
+cargo build --no-default-features
+cargo build --release
 
 # GUI (default)
 cargo run -- --mode gui
@@ -51,46 +81,58 @@ cargo run -- --mode gui
 # CLI
 cargo run -- --mode cli
 
-# Custom data location (e.g., USB)
+# Custom data location (for example a USB drive)
 cargo run -- --mode gui --base-path D:\ChattyData
 ```
 
 ## GUI overview
 - Menus: File / View / Modules / Tools / Teacher / Settings / Help.
-- Tabs: Home (packs, submissions, metrics), Chat, Settings, Homework Dashboard (module), Homework & Revision module with built-in tutor.
-- Models: File ? Models to pick a GGUF from `data/models/` (or refresh after you drop one in).
-- Teacher lock: Teacher menu ? unlock with PIN (default PIN 0000; intended to be changed on first teacher unlock) or secret answer (default answer Math; intended to be changed on first teacher unlock); change PIN and secret while unlocked. Teacher Dashboard is hidden until unlocked.
-- Homework packs: import a pack JSON from Home or Teacher menu; filters by assignment/subject; Rescan to reload. Sample pack lives in `resources/homework_pack_sample_bundle.json` (copy into your data folder or import directly, along with `resources/attachments/` if you want the demo attachment).
-- Submissions: type answers, add attachments, export submission JSON with a hash-chained event log (start/answer/hint/retry/finalize) and final_hash for tamper-evidence.
-- Metrics: class/subject averages, per-student bars; multi-student selection; filters apply across Home and Dashboard; submissions summary in Teacher menu.
-- Themes: switch via View; presets include classic_light, chalkboard_dark, high_contrast.
-- Homework tutor: "Ask for hints" and "LLM homework helper" live in the Homework & Revision module; hints-only mode is configurable (teacher-only).
+- Tabs: Home, Chat, Settings, Diagnostics, Homework Dashboard (module), and Revision (module).
+- Models: File -> Models to pick a GGUF from `data/models/`, inspect the current auto-assigned main or Bookkeeper roles, refresh after you drop one in, or open the teacher-only Bookkeeper logs tab once unlocked.
+- Teacher lock: Teacher menu -> unlock with PIN (default PIN `0000`, intended to be changed on first teacher unlock) or secret answer (default answer `Math`, also intended to be changed on first teacher unlock). Teacher Dashboard is hidden until unlocked.
+- Homework packs: author packs in Markdown under `data/homework/outgoing/` and transcribe to JSON via the Teacher Dashboard, or import JSON packs via Home or the Teacher menu.
+- Sharing: homework packs are simple files. Share a pack `.md` or `.json` with other teachers or schools, including any referenced attachments.
+- Home tab: selected assignment preview, worksheet or handout rendering, text attachment previews when possible, submission area, and a compact mirror of the live chat.
+- Chat: the bottom input bar is shared with the main chat flow; when homework context is active, Chat can use the selected assignment and still answer unrelated questions normally. The Chat tab also shows `Chatty's thoughts` on the left and `Memory jogger` on the right; sidebar entries preview-truncate in place and show fuller text on hover.
+- Homework guardrails: Home and Chat both intercept active assignment questions and steer them back toward hints instead of full answers.
+- Revision module: separate from live homework; it uses completed submissions plus past papers, stores notes under `revision/notes/`, and gives a more open revision helper while hiding teacher-side scores or diagnostic labels from student view.
+- Submissions: type answers, add attachments, export submission JSON with a hash-chained event log (`start`, `answer`, `hint`, `retry`, `finalize`) and `final_hash` for tamper-evidence.
+- Marking: Teacher Dashboard can convert completed submission JSON files into Markdown marking sheets under `data/homework/marking/`.
+- Printables: Teacher Dashboard can export student printables to `data/homework/printables/`.
+- Rubrics: Teacher Dashboard can export teacher rubrics to `data/homework/rubrics/`.
+- Metrics: class or subject averages, per-student bars, multi-student selection, submissions summary, and separate revision tools in the Homework Dashboard.
+- ECG window: a small indicator in the tab chrome shows recent system activity and refreshes on a lightweight hardware polling cycle. Its purpose is transparency as much as diagnostics, so schools, students, and parents can see when Chatty-EDU is actively doing local work.
+- Themes: switch via View; presets include `classic_light`, `chalkboard_dark`, and `high_contrast`.
+- Homework materials: if a task refers to a worksheet, list, or attachment, include it in `### Student Printable` or `attachments:` so students can actually see it in-app.
 
 ## CLI quick commands
-- `import_pack <path>` – copy a pack into `homework/assigned/`, apply policy.
-- `create_pack` / `create_pack_multi` – interactive pack builders.
-- `submit <assignment_id>` – prompt for answers/attachments; writes submission JSON to `homework/completed/`.
-- `teacher` – enter teacher console (default PIN 0000; intended to be changed on first teacher unlock); type `forgot` to answer the secret question (default answer Math; intended to be changed on first teacher unlock). Inside teacher console:
-  - `create_pack`, `create_pack_multi`, `export_pack_template`
-  - `import_pack <path>`, `import_submissions`, `show_completed`
+- `submit <assignment_id>` - prompt for answers or attachments; writes submission JSON to `homework/completed/`.
+- `teacher` - enter teacher console (default PIN `0000`; intended to be changed on first teacher unlock); type `forgot` to answer the secret question (default answer `Math`; intended to be changed on first teacher unlock). Inside teacher console:
+  - Packs: `generate_pack_md` (AI draft to `homework/outgoing/`), `transcribe_outgoing` (outgoing `.md` -> assigned `.json`), `import_pack <path>` (import `.md` or `.json`)
+  - Marking: `convert_submissions_to_md` (submission `.json` -> `homework/marking/*.md`)
+  - Paper exports: `export_printables` (pack -> `homework/printables/*.md`), `export_rubrics` (pack -> `homework/rubrics/*.md`)
+  - Builders: `create_pack`, `create_pack_multi`, `export_pack_template`
+  - Review: `import_submissions`, `show_completed`
   - Mode controls: `mode class`, `mode free`
-  - Game controls: `games on/off`, `allow_games_in_class`, `forbid_games_in_class`
-  - PIN: `set_pin` (enter twice to confirm)
-  - Secret: `set_secret` (update secret question/answer)
+  - Game controls: `games on`, `games off`, `allow_games_in_class`, `forbid_games_in_class`
+  - PIN: `set_pin`
+  - Secret: `set_secret`
 
 ## Module manifests (summary)
 `modules/<id>/module.json`:
+
 ```json
 {
   "id": "homework_dashboard",
   "title": "Homework Dashboard",
-  "roles": ["teacher", "student"],
-  "entry": { "type": "builtin_panel", "target": "homework_dashboard" },
-  "version": "1.0.0",
-  "description": "Built-in view for packs and submissions"
+      "roles": ["teacher"],
+      "entry": { "type": "builtin_panel", "target": "homework_dashboard" },
+      "version": "1.0.0",
+      "description": "Built-in view for packs and submissions"
 }
 ```
-Entry types: `builtin_panel`, `markdown`, `static_html` (external_process exists but is gated/disabled by default).
+
+Entry types: `builtin_panel`, `markdown`, `static_html` (`external_process` exists but is gated and disabled by default).
 
 ## Homework pack schema (v1)
 ```json
@@ -107,6 +149,8 @@ Entry types: `builtin_panel`, `markdown`, `static_html` (external_process exists
       "year_level": "7",
       "due_at": "2026-01-05T09:00:00Z",
       "instructions_md": "Solve the attached problems...",
+      "student_printable_md": "Optional: a paper-friendly student handout (defaults to instructions_md if omitted)",
+      "teacher_rubric_md": "Optional: teacher rubric or marking guide (included in marking exports)",
       "allow_games": false,
       "allow_ai_premark": true,
       "max_score": 100,
@@ -116,6 +160,8 @@ Entry types: `builtin_panel`, `markdown`, `static_html` (external_process exists
 }
 ```
 
+For Markdown-first packs, `year_level` is the canonical metadata key, but import or transcribe also accepts `year`, `year level`, `grade`, `grade level`, and `year group`.
+
 ## Submission schema (v1)
 ```json
 {
@@ -123,13 +169,29 @@ Entry types: `builtin_panel`, `markdown`, `static_html` (external_process exists
   "school_id": "school-123",
   "class_id": "yr7-math-a",
   "assignment_id": "hw-001",
+  "assignment_title": "Fractions",
+  "assignment_subject": "Math",
+  "assignment_year_level": "7",
+  "assignment_instructions_md": "Solve the attached problems...",
   "student_id": "s12345",
   "student_name": "Sample Student",
   "submitted_at": "2026-01-02T15:30:00Z",
   "answers_text": "My work...",
   "answers": [],
   "ai_premark": { "score": 78, "feedback": "Check step 3." },
-  "attachments": ["path/to/work.pdf"]
+  "attachments": ["path/to/work.pdf"],
+  "events": [
+    {
+      "t": 1764000000,
+      "type": "start",
+      "qid": null,
+      "payload": null,
+      "prev_hash": "",
+      "hash": "..."
+    }
+  ],
+  "final_hash": "...",
+  "summary": "Optional short summary"
 }
 ```
 
@@ -138,6 +200,7 @@ Entry types: `builtin_panel`, `markdown`, `static_html` (external_process exists
 - External process modules are disabled unless explicitly allowed.
 - Content filter (Janet) is enabled by default and operates entirely offline.
 - Homework packs, submissions, and AI pre-mark outputs are stored locally as readable JSON files.
+- Bookkeeper memory stays local under `config/bookkeeper/`; `Chatty's thoughts` is session-only, while `Memory jogger` persists across sessions as local text.
+- The ECG window reads local Windows performance counters only; it is a local transparency feature and UI health indicator, not telemetry.
+- It exists partly to make activity visible in the room, reinforcing the zero-calls-home design with an always-on local signal that Chatty-EDU is doing work on-device rather than silently sending data elsewhere.
 - There is no telemetry, analytics, logging to third parties, or remote kill-switch.
-
-
