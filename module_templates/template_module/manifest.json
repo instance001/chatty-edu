@@ -1,0 +1,6 @@
+{
+  "module_id": "template_module",
+  "display_name": "Template Module",
+  "icon": "puzzle",
+  "description": "Copy this starter, rename it, and customize the standalone UI + Chatty-EDU bridge."
+}

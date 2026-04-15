@@ -1,0 +1,10 @@
+{
+  "module_id": "demo_lesson_studio",
+  "display_name": "Lesson Studio (Demo)",
+  "icon": "book-open",
+  "description": "Teacher-facing hosted demo for shaping a lesson arc, checks for understanding, and a clean handoff.",
+  "roles": ["teacher"],
+  "author": "OpenAI",
+  "version": "0.1.0",
+  "order": 120
+}

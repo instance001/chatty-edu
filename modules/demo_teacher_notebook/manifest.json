@@ -1,0 +1,10 @@
+{
+  "module_id": "demo_teacher_notebook",
+  "display_name": "Teacher Notebook (Demo)",
+  "icon": "clipboard",
+  "description": "Teacher-facing native Python demo for logging observations, next supports, and a portable bridge handoff.",
+  "roles": ["teacher"],
+  "author": "OpenAI",
+  "version": "0.1.0",
+  "order": 140
+}

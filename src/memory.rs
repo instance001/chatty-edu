@@ -112,6 +112,14 @@ impl EduBookkeeperHandle {
     }
 
     pub fn append_chat_entry(&self, speaker: &str, text: &str, note: Option<String>) {
+        self.append_entry("chat", speaker, text, note);
+    }
+
+    pub fn append_event(&self, channel: &str, speaker: &str, text: &str, note: Option<String>) {
+        self.append_entry(channel, speaker, text, note);
+    }
+
+    fn append_entry(&self, channel: &str, speaker: &str, text: &str, note: Option<String>) {
         let trimmed = text.trim();
         if trimmed.is_empty() {
             return;
@@ -125,7 +133,7 @@ impl EduBookkeeperHandle {
         let entry = ColdLogEntry {
             session_id: self.session_id.clone(),
             timestamp: Utc::now().to_rfc3339(),
-            channel: "chat".to_string(),
+            channel: channel.trim().to_string(),
             speaker: speaker.trim().to_string(),
             text: truncate(&sanitized_text, 2000),
             note: note

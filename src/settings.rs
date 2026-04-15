@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
@@ -48,6 +49,26 @@ pub struct Settings {
     pub version: String,
     pub base_path: String,
     pub mode: String,
+    #[serde(default)]
+    pub network_device_id: String,
+    #[serde(default)]
+    pub network_recoverable_shared_chat_policy_json: Option<String>,
+    #[serde(default)]
+    pub network_device_name: String,
+    #[serde(default = "default_true")]
+    pub network_allow_unknown_devices: bool,
+    #[serde(default = "default_true")]
+    pub network_allow_shared_lukewarm_context: bool,
+    #[serde(default = "default_true")]
+    pub allow_sandbox_tool_requests: bool,
+    #[serde(default)]
+    pub network_trusted_devices: Vec<StoredNetworkPeer>,
+    #[serde(default)]
+    pub network_blocked_devices: Vec<StoredNetworkPeer>,
+    #[serde(default)]
+    pub network_device_aliases: HashMap<String, String>,
+    #[serde(default)]
+    pub network_device_groups: HashMap<String, String>,
     pub default_year_level: String,
     pub teacher_mode: String,
     #[serde(default = "default_homework_hints_only")]
@@ -70,6 +91,14 @@ pub struct Settings {
     pub game: GameConfig,
     #[serde(default)]
     pub ui: UiSettings,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+pub struct StoredNetworkPeer {
+    #[serde(default)]
+    pub device_id: String,
+    #[serde(default)]
+    pub device_name: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
@@ -98,13 +127,23 @@ pub fn default_homework_hints_only() -> bool {
     true
 }
 
-pub fn default_base_path() -> PathBuf {
-    let exe_dir = std::env::current_exe()
-        .ok()
-        .and_then(|p| p.parent().map(|p| p.to_path_buf()));
+pub fn default_true() -> bool {
+    true
+}
 
-    if let Some(dir) = exe_dir {
-        return dir.join("data");
+pub fn default_base_path() -> PathBuf {
+    if let Ok(exe_path) = std::env::current_exe() {
+        if let Some(project_root) = exe_path
+            .ancestors()
+            .filter(|path| path.is_dir())
+            .find(|path| path.join("Cargo.toml").is_file() && path.join("src").is_dir())
+        {
+            return project_root.to_path_buf();
+        }
+
+        if let Some(dir) = exe_path.parent() {
+            return dir.join("data");
+        }
     }
 
     dirs::home_dir()
@@ -132,6 +171,7 @@ pub fn ensure_base_folders(base: &Path) -> io::Result<()> {
         base.join("runtime"),
         base.join("themes"),
         base.join("models"),
+        base.join("Chatty_Sandbox"),
     ];
 
     for d in dirs {
@@ -166,6 +206,16 @@ pub fn load_or_init_settings(base: &Path) -> io::Result<Settings> {
         version: "0.5.0".to_string(),
         base_path: base.to_string_lossy().to_string(),
         mode: "gui".to_string(),
+        network_device_id: String::new(),
+        network_recoverable_shared_chat_policy_json: None,
+        network_device_name: String::new(),
+        network_allow_unknown_devices: true,
+        network_allow_shared_lukewarm_context: true,
+        allow_sandbox_tool_requests: true,
+        network_trusted_devices: Vec::new(),
+        network_blocked_devices: Vec::new(),
+        network_device_aliases: HashMap::new(),
+        network_device_groups: HashMap::new(),
         default_year_level: "year_3".to_string(),
         teacher_mode: "class".to_string(),
         homework_hints_only: default_homework_hints_only(),

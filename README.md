@@ -2,7 +2,7 @@
 
 Offline, local-first learning assistant for schools. No cloud, no accounts, no tracking. Ships as a single Rust binary with an egui desktop shell (Windows first) plus a CLI mode. Licensed under AGPLv3.
 
-Chatty-EDU never connects to the internet and does not require external services to function.
+Chatty-EDU never connects to the internet and does not require external services to function. It can also optionally connect to other nearby Chatty-EDU instances over local Wi-Fi or LAN when a user deliberately enables local networking.
 
 Designed for schools and boards:
 - Runs entirely on school hardware; bring your own offline model (GGUF).
@@ -21,6 +21,13 @@ Docs:
 - `design_intent.md`
 - `GLOSSARY.md`
 - `CHANGELOG.md`
+- `docs/MODULES.md`
+- `docs/MODULE_TEMPLATE_CHOOSER.md`
+- `docs/DEMO_MODULES.md`
+- `docs/NETWORKING.md`
+- `docs/MODULE_BUILDER_CHECKLIST.md`
+- `docs/MODULE_PACKAGING_GUIDE.md`
+- `module_templates/`
 
 ## Current highlights
 - Markdown-first homework packs: author `*.md` in `homework/outgoing/` and transcribe to JSON packs in `homework/assigned/`.
@@ -28,9 +35,13 @@ Docs:
 - Paper workflow: optional `### Student Printable` and `### Rubric` or `### Marking Guide` sections in pack Markdown, plus exports to `homework/printables/` and `homework/rubrics/`.
 - Teacher Dashboard AI helper: optionally draft a pack `.md` using the local model, then save and transcribe it.
 - Tri-helix memory surfaces: Chat includes `Chatty's thoughts` on the left for current-session context, `Memory jogger` on the right for persistent recent-session summaries, and a teacher-only Bookkeeper log search view behind the Teacher PIN.
+- Chatty sandbox: `Chatty_Sandbox/` now gives Chatty-EDU a real local scratchpad, task ledger, and approval-gated file tool lane for longer multi-step work without pushing raw file access outside the EDU data folder.
 - Homework-aware chat guardrails: both the Homework hint helper and main Chat intercept active assignment questions and steer the model toward hints instead of answers.
 - Student-facing homework context: Home shows the selected assignment, worksheet or handout content, text attachment previews when available, the submission flow, and a chat mirror.
 - Separate Revision workflow: Revision pulls from completed homework, keeps revision notes or progress under `revision/notes/`, supports imported past papers under `revision/past_papers/`, and uses a looser revision helper than live homework.
+- Standalone module hosting: drop-in modules can now advertise their own native desktop window or browser-style dashboard, and Chatty-EDU can host that real standalone UI in a tab without taking over the module's runtime.
+- Bundled EDU demo modules: lesson planning, revision sprinting, and a native teacher notebook now ship as living examples for educators and builders.
+- Optional local networking: nearby Chatty-EDU instances can discover and connect over local Wi-Fi or LAN, share lightweight presence, send short handoff notes, and move homework packs, revision packs, and classroom setup bundles without using cloud services.
 - Home tab chat mirror: students can keep working on Home while still seeing the latest chat exchange at the bottom of the page.
 - ECG window: a small top-right activity trace acts as a transparency and trust feature, showing visible local activity using Windows hardware counters with GPU-first fallback to CPU.
 - Pack parsing is forgiving around year or grade terminology: `year_level` is canonical, but Markdown import or transcribe also accepts `year`, `year level`, `grade`, `grade level`, and `year group`.
@@ -48,11 +59,17 @@ Docs:
 - `homework/marking/` - marking sheets exported as Markdown from student submissions (`marking_*.md`)
 - `homework/printables/` - student printables exported as Markdown (`student_*.md`)
 - `homework/rubrics/` - teacher rubrics or marking guides exported as Markdown (`rubric_*.md`)
-- `modules/` - module manifests (built-in Homework Dashboard and Revision manifests are auto-generated)
+- `modules/` - built-in EDU modules plus drop-in modules (`manifest.json` preferred, `module.json` legacy-supported, optional `visual_load.json` and bridge files)
+- `modules/demo_*` - bundled EDU-flavoured hosted demo modules
 - `themes/` - active theme plus presets
 - `models/` - drop offline GGUF model files here; select via File -> Models
 - `revision/notes/` - saved revision notes or progress
 - `revision/past_papers/` - imported past papers and teacher revision materials
+- `network_inbox/` - received networking items waiting in inboxes before apply
+- `network_inbox/homework_packs/` - received homework packs
+- `network_inbox/revision_packs/` - received revision packs
+- `network_inbox/workflow_bundles/` - received classroom setup bundles
+- `Chatty_Sandbox/` - approval-gated scratchpad, task ledger, and working files for longer local tasks
 - `runtime/`, `logs/`, `ide/` - reserved for expansion
 
 ## Prereqs
@@ -86,14 +103,21 @@ cargo run -- --mode gui --base-path D:\ChattyData
 ```
 
 ## GUI overview
-- Menus: File / View / Modules / Tools / Teacher / Settings / Help.
+- Menus: File / View / Modules / Tools / Network / Teacher / Settings / Help.
 - Tabs: Home, Chat, Settings, Diagnostics, Homework Dashboard (module), and Revision (module).
+- Sandbox: the `Sandbox` tab hosts `Chatty_Sandbox/`, including the default scratchpad at `scratchpad/current.md`, the structured task ledger at `scratchpad/task_ledger.md`, a recursive file list, and a built-in editor.
+- Networking: open the `Networking` tab from `View` or `Network` to make this device visible on the local LAN, discover nearby EDU peers, connect, disconnect, send handoff notes, push homework packs or revision packs, send classroom setup bundles, and locally rename/group devices so larger classroom lists stay manageable.
+- Modules: drop-in modules can open as closable tabs, host their own real native or web UI when they advertise `visual_load.json`, and optionally report status back through the portable EDU bridge.
+- Demos: bundled hosted demo modules live under `modules/demo_*` so builders can inspect working portable examples.
 - Models: File -> Models to pick a GGUF from `data/models/`, inspect the current auto-assigned main or Bookkeeper roles, refresh after you drop one in, or open the teacher-only Bookkeeper logs tab once unlocked.
 - Teacher lock: Teacher menu -> unlock with PIN (default PIN `0000`, intended to be changed on first teacher unlock) or secret answer (default answer `Math`, also intended to be changed on first teacher unlock). Teacher Dashboard is hidden until unlocked.
 - Homework packs: author packs in Markdown under `data/homework/outgoing/` and transcribe to JSON via the Teacher Dashboard, or import JSON packs via Home or the Teacher menu.
 - Sharing: homework packs are simple files. Share a pack `.md` or `.json` with other teachers or schools, including any referenced attachments.
+- Setup bundles: use `Push Setup` in Networking when you want to mirror lesson-wide EDU settings to selected nearby devices without also pushing the actual homework or revision content.
 - Home tab: selected assignment preview, worksheet or handout rendering, text attachment previews when possible, submission area, and a compact mirror of the live chat.
 - Chat: the bottom input bar is shared with the main chat flow; when homework context is active, Chat can use the selected assignment and still answer unrelated questions normally. The Chat tab also shows `Chatty's thoughts` on the left and `Memory jogger` on the right; sidebar entries preview-truncate in place and show fuller text on hover.
+- Sandbox approvals: when Chatty-EDU wants to read, write, append, preload, or update the task ledger inside `Chatty_Sandbox/`, it now stages those actions for approval instead of silently running them. The chat bar supports `Seed ledger from current prompt`, `Defer actions`, `Preload + Continue`, `Approve`, and `Approve + Continue`.
+- Scratchpad flow: use the Sandbox tab toolbar to promote working text into the scratchpad, turn it into task-ledger notes, set `Current task` or `Next step`, or append a compact summary back into the persistent `Memory jogger`.
 - Homework guardrails: Home and Chat both intercept active assignment questions and steer them back toward hints instead of full answers.
 - Revision module: separate from live homework; it uses completed submissions plus past papers, stores notes under `revision/notes/`, and gives a more open revision helper while hiding teacher-side scores or diagnostic labels from student view.
 - Submissions: type answers, add attachments, export submission JSON with a hash-chained event log (`start`, `answer`, `hint`, `retry`, `finalize`) and `final_hash` for tamper-evidence.
@@ -118,21 +142,31 @@ cargo run -- --mode gui --base-path D:\ChattyData
   - PIN: `set_pin`
   - Secret: `set_secret`
 
-## Module manifests (summary)
-`modules/<id>/module.json`:
+## Modules (summary)
+Chatty-EDU now supports two module styles:
 
-```json
-{
-  "id": "homework_dashboard",
-  "title": "Homework Dashboard",
-      "roles": ["teacher"],
-      "entry": { "type": "builtin_panel", "target": "homework_dashboard" },
-      "version": "1.0.0",
-      "description": "Built-in view for packs and submissions"
-}
-```
+- preferred portable modules using `modules/<id>/manifest.json`
+- legacy EDU modules using `modules/<id>/module.json`
 
-Entry types: `builtin_panel`, `markdown`, `static_html` (`external_process` exists but is gated and disabled by default).
+Portable modules can also advertise:
+
+- `visual_load.json` to host the real standalone UI inside a tab
+- `bridge/status.json` and `bridge/log_sources.json` for optional EDU-side status and log context
+
+Legacy `module.json` modules still work for:
+
+- `builtin_panel`
+- `markdown`
+- `static_html`
+- `external_process` (still gated / not the recommended new-module path)
+
+For the full builder path, use:
+
+- `docs/MODULES.md`
+- `docs/MODULE_VISUAL_LOAD.md`
+- `docs/MODULE_BRIDGE.md`
+- `docs/DEMO_MODULES.md`
+- `module_templates/`
 
 ## Homework pack schema (v1)
 ```json
@@ -196,9 +230,10 @@ For Markdown-first packs, `year_level` is the canonical metadata key, but import
 ```
 
 ## Safety and offline stance
-- Offline by default; no network calls in core flows.
+- Offline by default; no internet or cloud calls in core flows.
 - External process modules are disabled unless explicitly allowed.
 - Content filter (Janet) is enabled by default and operates entirely offline.
+- Optional local networking is LAN-only, off by default, and only activates when a user enables local peer connectivity.
 - Homework packs, submissions, and AI pre-mark outputs are stored locally as readable JSON files.
 - Bookkeeper memory stays local under `config/bookkeeper/`; `Chatty's thoughts` is session-only, while `Memory jogger` persists across sessions as local text.
 - The ECG window reads local Windows performance counters only; it is a local transparency feature and UI health indicator, not telemetry.

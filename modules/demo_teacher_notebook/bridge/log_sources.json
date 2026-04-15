@@ -1,0 +1,12 @@
+{
+  "sources": [
+    {
+      "path": "logs/session_log.md",
+      "label": "Teacher checkpoint log",
+      "format": "log",
+      "enabled": true,
+      "tail_lines": 40,
+      "tail_chars": 4000
+    }
+  ]
+}

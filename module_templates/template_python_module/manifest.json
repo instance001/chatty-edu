@@ -1,0 +1,6 @@
+{
+  "module_id": "template_python_module",
+  "display_name": "Template Python Module",
+  "icon": "python",
+  "description": "Copy this starter, rename it, and customize a standalone Python UI with the optional Chatty-EDU bridge."
+}

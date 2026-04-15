@@ -6,6 +6,7 @@ This document describes the security and privacy posture of Chatty-EDU as shippe
 - Chatty-EDU is offline-first and does not require accounts or cloud services.
 - In normal operation, it stores data as local files under a configurable base directory (default: `./data` next to the executable).
 - Prompts and responses for the local model are processed on the same machine. No text is sent to any server by Chatty-EDU.
+- Chatty-EDU can optionally use local Wi-Fi or LAN peer connectivity between nearby Chatty-EDU instances, but this is off by default and is not cloud communication.
 - The ECG window is a visible transparency feature: it shows local machine activity so schools, students, and parents have an on-screen cue that the app is actively working on-device.
 
 ## What data is stored
@@ -48,10 +49,13 @@ Chatty-EDU is designed to operate without internet access.
 - The core application does not need network access to function.
 - Chatty-EDU does not ship with any cloud endpoints and does not transmit homework or submission content to third parties as part of normal operation.
 - The ECG window does not contact any service; it only reads local counters and gives users a visible signal that work is happening on-device.
+- Chatty-EDU can optionally discover and connect to nearby Chatty-EDU instances on the same trusted local Wi-Fi or LAN when a user enables the local networking feature.
+- That local peer mode is off by default, limited to the local network, and intended for EDU-to-EDU handoffs or nearby collaboration.
 
 Important exceptions:
 - If a user clicks external links, the OS may launch a browser that can access the network.
 - If you modify the app to add online features, or enable or run external tools outside Chatty-EDU, those tools may use the network.
+- If a user enables local networking, the app will use local LAN discovery and local peer connections between nearby Chatty-EDU instances.
 
 ## Authentication and access control (important limitation)
 Teacher tools are gated by a local PIN or secret stored in `config/settings.json`.

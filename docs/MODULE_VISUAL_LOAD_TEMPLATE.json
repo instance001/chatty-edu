@@ -1,0 +1,19 @@
+{
+  "kind": "native_window",
+  "auto_launch": true,
+  "window_title_contains": "Replace With Window Title",
+  "notes": "Optional note shown in Chatty-EDU above the hosted module UI.",
+  "build": {
+    "program": "cargo",
+    "args": ["build"],
+    "cwd": "."
+  },
+  "launch": {
+    "program": "target/debug/replace_me.exe",
+    "args": [],
+    "cwd": ".",
+    "env": {
+      "EXAMPLE_FLAG": "1"
+    }
+  }
+}

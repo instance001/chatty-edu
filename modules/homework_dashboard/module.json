@@ -1,11 +1,15 @@
 {
   "id": "homework_dashboard",
   "title": "Homework Dashboard",
-  "version": "0.1.0",
-  "roles": ["teacher"],
+  "description": "Built-in view for packs and submissions",
+  "version": "1.0.0",
+  "author": "Chatty-EDU",
+  "roles": [
+    "teacher"
+  ],
   "entry": {
-    "type": "markdown",
-    "path": "content.md"
+    "type": "builtin_panel",
+    "target": "homework_dashboard"
   },
-  "order": 10
+  "order": -100
 }

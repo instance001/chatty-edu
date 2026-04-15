@@ -1,0 +1,18 @@
+{
+  "sources": [
+    {
+      "path": "logs/session.log",
+      "label": "Session Log",
+      "format": "log",
+      "tail_lines": 80,
+      "tail_chars": 4000
+    },
+    {
+      "path": "logs/events.jsonl",
+      "label": "Recent Events",
+      "format": "jsonl",
+      "tail_lines": 60,
+      "tail_chars": 5000
+    }
+  ]
+}

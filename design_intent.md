@@ -9,6 +9,8 @@ This system is designed to be legible to the people around it, not hidden behind
 
 Features like the ECG activity window exist so schools, students, and parents can see when Chatty-EDU is actively doing local work. That transparency supports the product's offline, zero-calls-home posture and helps prevent the software from feeling like an opaque surveillance box.
 
+Even when optional local peer networking is enabled between nearby Chatty-EDU devices, the design intent remains the same: no cloud dependence, no hidden calls home, and no requirement to trust invisible remote systems.
+
 The ECG window is not meant to monitor users. It is meant to make the software itself easier to trust.
 
 ## Teacher Use Boundary

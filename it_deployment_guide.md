@@ -2,7 +2,7 @@
 
 Audience: school IT, sysadmins, and deployment teams.
 
-Chatty-EDU is designed to run **offline** on local school hardware. It stores data as files on disk under a configurable base directory.
+Chatty-EDU is designed to run **offline** on local school hardware. It stores data as files on disk under a configurable base directory. It can also optionally connect to other nearby Chatty-EDU instances over trusted local Wi-Fi or LAN when a user enables the local networking feature.
 
 The small ECG indicator in the GUI is part of that deployment story: it is a visible transparency feature intended to help schools, students, and parents see that Chatty-EDU is actively doing local work instead of hiding background activity.
 
@@ -54,6 +54,56 @@ Backups are file-based: copy the entire base directory to back up or migrate a d
 
 Revision uses completed homework as source material. If you are migrating a deployment and want Revision history to remain intact, back up both `homework/completed/` and `revision/`.
 
+## Drop-in module deployments
+Chatty-EDU can now host standalone modules inside tabs without making those modules depend on Chatty-EDU to function.
+
+Practical deployment shape:
+- place the module folder under `<base>/modules/` (or the repo-local `modules/` during development)
+- preferred portable modules use `manifest.json`
+- legacy EDU modules can still use `module.json`
+- hosted standalone modules can add `visual_load.json`
+- optional bridge files live under `bridge/`
+
+For builder and review docs, see:
+- `docs/MODULES.md`
+- `docs/MODULE_TEMPLATE_CHOOSER.md`
+- `docs/DEMO_MODULES.md`
+- `docs/MODULE_PACKAGING_GUIDE.md`
+- `module_templates/`
+
+Bundled EDU demo modules are included under `modules/demo_*` and can be left in place as references or removed for a leaner deployment image.
+
+## Optional local networking
+Chatty-EDU now includes an optional local peer mode for nearby EDU instances.
+
+What it is for:
+- discovering other Chatty-EDU machines on the same trusted local network
+- connecting EDU-to-EDU over the LAN
+- sharing lightweight presence and short handoff notes
+- sending homework packs, revision packs, and classroom setup bundles across the local network
+
+What it is not:
+- internet sync
+- cloud messaging
+- remote admin tooling
+
+Operational notes:
+- local discovery uses UDP broadcast on port `45841`
+- connected sessions use a dynamically chosen local TCP listener port
+- the feature is off by default until a user enables `Make available for connectivity`
+- local firewall policy may need to allow Chatty-EDU on trusted local networks
+- Chatty-EDU and Chatty-Cog use different local networking identifiers, so they do not accidentally cross-connect
+- per-device aliases and group labels are local UI preferences, not a central directory or identity system
+- received transfer inboxes live under `network_inbox/` and are intended to be previewed before apply
+- `workflow_bundles/` are for lesson-wide setup only, not secret material or student identity data
+
+Recommended deployment stance:
+- leave networking off on single-device student setups
+- enable it only where local peer collaboration or handoff is useful
+- treat it as a local convenience feature, not a hardened trust boundary
+
+For a plain-language explanation suitable for staff, see `docs/NETWORKING.md`.
+
 ## Models (GGUF) provisioning
 - Place approved GGUF files under `<base>/models/`.
 - On startup, the largest valid GGUF is auto-assigned to the main AI role.
@@ -103,3 +153,4 @@ Local model builds (default feature) compile llama.cpp via CMake, so you need CM
 - "Model worker exited immediately" / `GGML_ASSERT`: the GGUF is likely incompatible with the embedded llama.cpp bindings; try a different GGUF/quant.
 - No model selected on first launch: confirm `<base>/models/` contains at least one valid GGUF, then refresh or relaunch. Single-model deployments are valid; Bookkeeper will simply stay in keyword-only mode.
 - No packs visible: confirm the correct `--base-path` and that packs are in `<base>/homework/assigned/` (JSON) or `<base>/homework/outgoing/` (Markdown, then transcribe).
+- No EDU peers found in Networking: make sure both devices are on the same trusted local network, at least one device has `Make available for connectivity` enabled, and local firewall policy allows Chatty-EDU discovery and local peer traffic.

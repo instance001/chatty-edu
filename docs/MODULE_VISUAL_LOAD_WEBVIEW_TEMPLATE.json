@@ -1,0 +1,19 @@
+{
+  "kind": "webview",
+  "auto_launch": true,
+  "title": "Replace With Module Title",
+  "url": "http://127.0.0.1:4173",
+  "file": "",
+  "notes": "Leave `url` or `file` filled depending on how this module serves its UI.",
+  "build": {
+    "program": "npm",
+    "args": ["run", "build"],
+    "cwd": "."
+  },
+  "serve": {
+    "program": "npm",
+    "args": ["run", "preview"],
+    "cwd": "."
+  },
+  "serve_wait_ms": 1500
+}

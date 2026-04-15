@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lesson Studio (Demo)</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Teacher Hosted Webview Demo</p>
+          <h1>Lesson Studio (Demo)</h1>
+          <p class="subtle">
+            Use this lesson board to sketch a class plan, checks for understanding, and a tidy handoff for Chatty-EDU.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <button id="save-state" type="button">Save lesson</button>
+          <button id="reset-state" type="button" class="secondary">Reset</button>
+          <button id="refresh-preview" type="button" class="secondary">Refresh preview</button>
+        </div>
+      </header>
+
+      <section class="stats-grid">
+        <article class="stat-card">
+          <span class="stat-label">Lesson blocks</span>
+          <strong id="block-count">0</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Resources listed</span>
+          <strong id="resource-count">0</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Bridge mode</span>
+          <strong id="bridge-status">standalone</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Sync state</span>
+          <strong id="sync-status">local only</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Room mode</span>
+          <strong id="room-mode">standalone</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Local role</span>
+          <strong id="room-role">teacher only</strong>
+        </article>
+      </section>
+
+      <section class="panel room-panel">
+        <h2>Lesson room session</h2>
+        <p class="subtle">
+          When this module is opened inside a shared Chatty-EDU lesson room, the current session
+          policy appears here and can turn the board into a teacher-led mirrored workspace.
+        </p>
+
+        <div class="room-grid">
+          <article class="stat-card">
+            <span class="stat-label">Session</span>
+            <strong id="room-session-heading">No active room session</strong>
+            <span id="room-session-detail" class="stat-label">This copy is currently a local lesson board.</span>
+          </article>
+
+          <article class="stat-card">
+            <span class="stat-label">Editing policy</span>
+            <strong id="room-policy-heading">Local editing</strong>
+            <span id="room-policy-detail" class="stat-label">Local editing is available.</span>
+          </article>
+
+          <article class="stat-card">
+            <span class="stat-label">Participants</span>
+            <strong id="room-participant-count">1</strong>
+            <span id="room-participants" class="stat-label">Just this device for now.</span>
+          </article>
+        </div>
+
+        <article class="stat-card testing-card">
+          <span class="stat-label" id="room-action-heading">Testing hint</span>
+          <strong id="room-action-title">Teacher-led sync is available</strong>
+          <span id="room-action-hint" class="stat-label">
+            Start a module session from Chatty-EDU Networking, then share this lesson state to connected learners when the board is ready.
+          </span>
+        </article>
+
+        <div class="sync-strip" aria-label="Lesson sync status">
+          <span id="sync-revision-badge" class="sync-badge local">Revision local</span>
+          <span id="sync-source-badge" class="sync-badge subtle">No teacher revision applied yet</span>
+          <span id="presence-badge" class="sync-badge subtle">Teacher idle</span>
+          <span id="last-activity-badge" class="sync-badge subtle">Last activity not seen yet</span>
+        </div>
+
+        <div id="room-toast-stack" class="room-toast-stack" aria-live="polite" aria-atomic="true"></div>
+
+        <div class="room-events-layout">
+          <article class="stat-card room-actions-card">
+            <span class="stat-label">Room activity demo</span>
+            <strong>Quick classroom signals</strong>
+            <span class="stat-label">
+              These buttons emit lightweight room events so the class can signal progress before a
+              full lesson revision is pushed.
+            </span>
+            <div class="event-action-grid">
+              <button id="event-ready" type="button">Class ready</button>
+              <button id="event-help" type="button">Need help</button>
+              <button id="event-next" type="button">Move to next activity</button>
+            </div>
+            <label class="room-note-field">
+              Quick room note
+              <div class="room-note-row">
+                <input id="room-note-input" type="text" placeholder="Short classroom note..." />
+                <button id="event-note" type="button" class="secondary">Send note</button>
+              </div>
+            </label>
+            <span id="room-event-status" class="stat-label room-event-status">
+              Local activity feed only. Open this inside Chatty-EDU to test classroom room events.
+            </span>
+          </article>
+
+          <article class="stat-card room-feed-card">
+            <span class="stat-label">Recent room events</span>
+            <strong>Classroom event stream</strong>
+            <span class="stat-label">Teacher and learner check-ins appear here.</span>
+            <ul id="room-event-list" class="room-event-list">
+              <li class="room-event-empty">No room activity yet.</li>
+            </ul>
+          </article>
+        </div>
+
+        <article class="stat-card asset-bridge-card">
+          <div class="asset-heading">
+            <div>
+              <span class="stat-label">Incoming bridge assets</span>
+              <strong>Lesson asset inbox</strong>
+              <span class="stat-label">
+                Approved files or text payloads delivered into the module's `lesson_assets` lane
+                appear here for teacher review and import.
+              </span>
+            </div>
+            <span id="incoming-asset-status" class="sync-badge subtle">Local only</span>
+          </div>
+
+          <div class="asset-layout">
+            <div class="asset-list-card">
+              <strong>Waiting in lane</strong>
+              <ul id="incoming-asset-list" class="incoming-asset-list">
+                <li class="incoming-asset-empty">No incoming assets waiting.</li>
+              </ul>
+            </div>
+
+            <div class="asset-preview-card">
+              <strong id="incoming-asset-title">No asset selected</strong>
+              <span id="incoming-asset-meta" class="stat-label asset-meta">
+                Pick an incoming asset to preview or import it into the lesson board.
+              </span>
+              <textarea id="incoming-asset-preview" rows="8" readonly>(preview appears here)</textarea>
+              <div class="asset-actions">
+                <button id="incoming-asset-open" type="button">Open payload</button>
+                <button id="incoming-asset-apply" type="button">Apply to lesson</button>
+                <button id="incoming-asset-consume" type="button" class="secondary">Mark consumed</button>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <main class="workspace-grid">
+        <section class="panel">
+          <h2>Lesson context</h2>
+          <label>
+            Class or group
+            <input id="class_name" type="text" placeholder="Year 8 English, Senior Biology..." />
+          </label>
+          <label>
+            Lesson goal
+            <input id="lesson_goal" type="text" placeholder="What should students understand by the end?" />
+          </label>
+          <label>
+            Success criteria
+            <textarea id="success_criteria" rows="4" placeholder="List the signs that the lesson landed."></textarea>
+          </label>
+          <label>
+            Warm-up
+            <textarea id="warm_up" rows="4" placeholder="Quick entry task, retrieval prompt, or discussion hook."></textarea>
+          </label>
+        </section>
+
+        <section class="panel">
+          <h2>Lesson flow</h2>
+          <label>
+            Main lesson blocks
+            <textarea id="main_blocks" rows="8" placeholder="- Mini-lesson&#10;- Guided practice&#10;- Pair share&#10;- Exit ticket"></textarea>
+          </label>
+          <label>
+            Checks for understanding
+            <textarea id="checks_for_understanding" rows="5" placeholder="Cold call questions, mini whiteboards, peer explanation prompts..."></textarea>
+          </label>
+          <label>
+            Homework or next lesson bridge
+            <textarea id="homework" rows="4" placeholder="What should students do next?"></textarea>
+          </label>
+        </section>
+
+        <section class="panel">
+          <h2>Resources and handoff</h2>
+          <label>
+            Resources
+            <textarea id="resources" rows="5" placeholder="- Slides&#10;- Source text&#10;- Worked example sheet"></textarea>
+          </label>
+          <label>
+            Teacher note
+            <textarea id="teacher_note" rows="5" placeholder="Anything the next teacher, department lead, or future-you should know."></textarea>
+          </label>
+          <label>
+            Summary preview
+            <textarea id="summary_preview" rows="5" readonly></textarea>
+          </label>
+          <label>
+            Snapshot preview
+            <textarea id="snapshot_preview" rows="10" readonly></textarea>
+          </label>
+        </section>
+      </main>
+    </div>
+
+    <script src="chattyedu_bridge.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "kind": "native_window",
+  "auto_launch": true,
+  "title": "Teacher Notebook (Demo)",
+  "window_title_contains": "Teacher Notebook (Demo)",
+  "launch": {
+    "program": "py",
+    "args": ["-3", "src/main.py"],
+    "cwd": "."
+  },
+  "notes": "Native Python demo. It stays standalone outside Chatty-EDU and also demonstrates the optional bridge log_sources plug."
+}

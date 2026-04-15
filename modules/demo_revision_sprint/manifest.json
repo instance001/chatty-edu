@@ -1,0 +1,10 @@
+{
+  "module_id": "demo_revision_sprint",
+  "display_name": "Revision Sprint (Demo)",
+  "icon": "timer",
+  "description": "Student-facing hosted demo for planning a short revision push with topics, blocks, and a clean handoff.",
+  "roles": ["teacher", "student"],
+  "author": "OpenAI",
+  "version": "0.1.0",
+  "order": 130
+}

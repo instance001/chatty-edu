@@ -1,0 +1,29 @@
+{
+  "features": [
+    "shared_state_publish",
+    "shared_state_receive",
+    "room_aware",
+    "host_authoritative"
+  ],
+  "asset_lanes": [
+    {
+      "lane_id": "lesson_assets",
+      "label": "Lesson Assets",
+      "direction": "incoming",
+      "delivery_mode": "bridge_inbox",
+      "artifact_kinds": ["module_asset_file", "pack_file"],
+      "accepted_content_types": ["text/markdown", "application/json", "text/plain", "application/octet-stream"],
+      "max_bytes": 8388608,
+      "replayable": true,
+      "notes": [
+        "This demo can import approved lesson assets from the bridge inbox."
+      ]
+    }
+  ],
+  "notes": [
+    "Teacher can publish lesson-ready state for connected learners.",
+    "Incoming shared state is applied through the portable bridge.",
+    "This module can read shared room session state so hosted lessons can follow teacher-led sessions.",
+    "Approved lesson assets can land in the lesson_assets bridge lane for local import."
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "kind": "webview",
+  "auto_launch": true,
+  "title": "Lesson Studio (Demo)",
+  "file": "web/index.html",
+  "notes": "Hosted webview demo for teacher lesson planning. State stays inside the module; Chatty-EDU only reads the optional bridge handoff."
+}

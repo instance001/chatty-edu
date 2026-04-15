@@ -1,0 +1,7 @@
+{
+  "kind": "webview",
+  "auto_launch": true,
+  "title": "Template Module",
+  "file": "web/index.html",
+  "notes": "This starter keeps module state inside the module and uses the optional bridge only for Chatty-EDU handoff."
+}

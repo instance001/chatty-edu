@@ -1,0 +1,11 @@
+{
+  "features": [
+    "shared_state_publish",
+    "shared_state_receive",
+    "host_authoritative"
+  ],
+  "notes": [
+    "This starter already includes the portable shared-state bridge.",
+    "Add or remove features so the declaration matches the module's real behavior."
+  ]
+}

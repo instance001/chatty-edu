@@ -12,8 +12,13 @@ mod homework_pack;
 mod local_model;
 mod memory;
 mod model_registry;
+#[allow(dead_code)]
+mod module_bridge;
+mod module_host;
 mod modules;
+mod networking;
 mod revision;
+mod sandbox;
 mod settings;
 mod theme;
 

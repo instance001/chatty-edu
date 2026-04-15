@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Revision Sprint (Demo)</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Student Hosted Webview Demo</p>
+          <h1>Revision Sprint (Demo)</h1>
+          <p class="subtle">
+            Build a short revision run with target topics, timed blocks, and a handoff note Chatty-EDU can understand.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <button id="save-state" type="button">Save sprint</button>
+          <button id="reset-state" type="button" class="secondary">Reset</button>
+          <button id="refresh-preview" type="button" class="secondary">Refresh preview</button>
+        </div>
+      </header>
+
+      <section class="stats-grid">
+        <article class="stat-card">
+          <span class="stat-label">Priority topics</span>
+          <strong id="topic-count">0</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Revision blocks</span>
+          <strong id="block-count">0</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Bridge mode</span>
+          <strong id="bridge-status">standalone</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Sync state</span>
+          <strong id="sync-status">local only</strong>
+        </article>
+      </section>
+
+      <main class="workspace-grid">
+        <section class="panel">
+          <h2>Sprint setup</h2>
+          <label>
+            Student or group
+            <input id="student_name" type="text" placeholder="Student name, table group, or study pair..." />
+          </label>
+          <label>
+            Subject
+            <input id="subject" type="text" placeholder="Mathematics, Biology, History..." />
+          </label>
+          <label>
+            Exam or checkpoint date
+            <input id="exam_date" type="text" placeholder="Friday, Week 9 / 12 May / next mock..." />
+          </label>
+          <label>
+            Priority topics
+            <textarea id="priority_topics" rows="6" placeholder="- Algebra rearranging&#10;- Cell transport&#10;- Essay paragraph structure"></textarea>
+          </label>
+        </section>
+
+        <section class="panel">
+          <h2>Revision plan</h2>
+          <label>
+            Stuck points
+            <textarea id="stuck_points" rows="4" placeholder="Where does the learner hesitate or slow down?"></textarea>
+          </label>
+          <label>
+            Revision blocks
+            <textarea id="revision_blocks" rows="8" placeholder="- 20 min recall quiz&#10;- 15 min worked examples&#10;- 10 min self-check"></textarea>
+          </label>
+          <label>
+            Confidence notes
+            <textarea id="confidence_notes" rows="4" placeholder="What already feels solid? What still feels shaky?"></textarea>
+          </label>
+          <label>
+            Next question set
+            <textarea id="next_question_set" rows="4" placeholder="Which problems, flashcards, or reading pages come next?"></textarea>
+          </label>
+        </section>
+
+        <section class="panel">
+          <h2>Handoff preview</h2>
+          <label>
+            Summary preview
+            <textarea id="summary_preview" rows="5" readonly></textarea>
+          </label>
+          <label>
+            Snapshot preview
+            <textarea id="snapshot_preview" rows="12" readonly></textarea>
+          </label>
+        </section>
+      </main>
+    </div>
+
+    <script src="chattyedu_bridge.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

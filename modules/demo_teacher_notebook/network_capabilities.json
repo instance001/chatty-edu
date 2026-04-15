@@ -1,0 +1,10 @@
+{
+  "features": [
+    "shared_state_publish",
+    "shared_state_receive",
+    "host_authoritative"
+  ],
+  "notes": [
+    "Teacher notebook can publish and receive lesson-ready shared state through the portable bridge."
+  ]
+}

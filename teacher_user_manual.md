@@ -1,6 +1,6 @@
 # Chatty-EDU Teacher Manual (v0.5)
 
-Audience: teachers and school IT. Everything runs offline by default; no accounts or cloud calls.
+Audience: teachers and school IT. Everything runs offline by default; no accounts or cloud calls. Optional local Wi-Fi or LAN connectivity between nearby Chatty-EDU instances is available if you choose to turn it on.
 
 ## What you need
 - Windows PC (first target).
@@ -33,10 +33,16 @@ Audience: teachers and school IT. Everything runs offline by default; no account
    - Revision is now a separate workflow from live homework. It pulls from completed homework, stores notes or progress under `revision/notes/`, and can include past papers under `revision/past_papers/`.
    - The Homework Dashboard now includes separate Revision teacher tools for opening Revision, creating revision packs, and importing past papers.
    - Submissions are written to `data/homework/completed/` and include a hash-chained event log (`start`, `answer`, `hint`, `retry`, `finalize`) plus a `final_hash` for tamper-evidence.
+   - Sandbox: the permanent `Sandbox` tab gives Chatty-EDU a real local working area under `data/Chatty_Sandbox/` with a scratchpad, structured task ledger, and approval-gated file actions for longer multi-step work.
 6. Watch the ECG window:
    - A small ECG indicator appears in the tab chrome.
    - It samples local Windows hardware activity roughly every 1.5 seconds and is intended as a quick "is the machine busy?" signal, not grading or network telemetry.
    - It is also a transparency and trust feature: teachers, schools, students, and parents can see that Chatty-EDU is visibly doing local work instead of hiding background activity behind a blank screen.
+7. Optional local networking:
+   - Open the `Network` menu or `Networking` tab if you want one Chatty-EDU machine to discover or connect to another nearby Chatty-EDU machine.
+   - Turn on `Make available for connectivity` on one device, then `Refresh discovery` on the other.
+   - This is local Wi-Fi or LAN only. It is not cloud sync.
+   - Once connected, you can use separate transfer lanes for `Push Pack`, `Push Revision`, and `Push Setup`.
 
 ## Homework basics
 - Packs are authored in Markdown (`*.md`) under `homework/outgoing/` and transcribed into JSON packs (`homework_pack_*.json`) under `homework/assigned/`, or you can import JSON directly.
@@ -59,12 +65,60 @@ Audience: teachers and school IT. Everything runs offline by default; no account
 - Student-facing Revision hides teacher-side scores and diagnostic labels, even when those signals exist in the underlying submission data.
 - Active homework guardrails still apply on Home and in Chat while a live assignment is selected.
 
+## Shared classroom setup bundles
+- `Push Setup` in the Networking tab sends a **classroom setup bundle** to selected connected EDU peers.
+- A setup bundle is for lesson-wide configuration, not student content.
+- It can carry things like:
+  - `teacher_mode`
+  - default year level
+  - Janet safety toggles
+  - game or voice toggles
+  - model hints and token limits
+- It does **not** carry:
+  - teacher PINs
+  - secret answers
+  - blocked-device lists
+  - student identity data
+  - the actual homework pack or revision pack content
+- Received setup bundles land in their own inbox first and must be applied deliberately.
+- This is useful when one teacher device is the lesson-prep machine and the rest of the room should mirror that ready state quickly.
+
 ## Memory and logs
 - `Chatty's thoughts` is session-only. It shows recent message-pair context that the main chat is actively using and clears when the app closes.
 - `Memory jogger` persists across sessions as a short local summary built from recent activity when the app closes.
 - Sidebar entries may preview-truncate in the narrow panel, but they show fuller text on hover.
 - Teacher-only Bookkeeper logs are available from File -> Models after teacher unlock. That tab is meant for local log search and support diagnosis, not for students.
 - The in-app Bookkeeper tab is PIN-gated for convenience, but it is still just a local UI boundary; the underlying files remain local files on disk.
+
+## Sandbox and scratchpad
+- `Chatty_Sandbox/` lives under the active EDU data folder and is the only file area Chatty-EDU's sandbox tools are allowed to touch.
+- Default files:
+  - `Chatty_Sandbox/scratchpad/current.md`
+  - `Chatty_Sandbox/scratchpad/task_ledger.md`
+- Use the `Sandbox` tab when you want Chatty-EDU to stay grounded during a longer piece of work instead of relying only on the active chat context.
+- The scratchpad is for free-form durable notes.
+- The task ledger is for structured state:
+  - current task
+  - next step
+  - open questions
+  - files touched
+  - working notes
+- If Chatty-EDU decides it would help to read or write sandbox files, it now stages those requests in the chat bar for approval instead of silently running them.
+- The approval ladder is:
+  - `Seed ledger from current prompt`
+  - `Defer actions`
+  - `Preload + Continue`
+  - `Approve`
+  - `Approve + Continue`
+  - `Reject`
+- `Preload + Continue` is usually the smoothest option for longer multi-step tasks because it lets Chatty-EDU gather scratchpad, ledger, and relevant file context before continuing.
+- The Sandbox tab editor can also promote the current buffer into:
+  - the scratchpad
+  - task-ledger notes
+  - `Current task`
+  - `Next step`
+  - a compact summary back into the persistent `Memory jogger`
+- This is still local-only and still approval-gated. It is meant to improve continuity, not to give the model unrestricted file access.
 
 ## CLI admin (quick)
 `cargo run -- --mode cli`
@@ -93,9 +147,63 @@ Audience: teachers and school IT. Everything runs offline by default; no account
   - `back`
 - Outside the teacher console: `submit <assignment_id>`.
 
+## Modules and hosted tools
+- Chatty-EDU can now host drop-in standalone modules inside closable tabs.
+- Modules can stay fully standalone and only add a thin EDU compatibility plug:
+  - `manifest.json` for discovery
+  - optional `visual_load.json` for hosted native or web UI
+  - optional `bridge/status.json` and `bridge/log_sources.json` for module-reported status
+- This means a tool can run normally outside Chatty-EDU and still be EDU-compatible when dropped into `modules/`.
+- Builder docs live in:
+  - `docs/MODULES.md`
+  - `docs/MODULE_TEMPLATE_CHOOSER.md`
+  - `docs/DEMO_MODULES.md`
+  - `docs/MODULE_BRIDGE.md`
+  - `docs/MODULE_VISUAL_LOAD.md`
+  - `module_templates/`
+
+Bundled EDU demo modules also live in `modules/demo_*` so teachers can inspect working examples before trying third-party modules.
+
+## Networking (optional local peer mode)
+- Chatty-EDU can optionally connect to other nearby Chatty-EDU instances on the same local Wi-Fi or LAN.
+- Use the `Network` menu or open the `Networking` tab.
+- Turn on `Make available for connectivity` on the device that should be visible.
+- On another device, click `Refresh discovery`, then `Connect`.
+- You can then send short local handoff notes between connected EDU instances.
+- Use `Push Pack` for homework content, `Push Revision` for revision markdown, and `Push Setup` for lesson-wide EDU settings.
+- Received homework packs, revision packs, and setup bundles all land in their own inboxes first so they can be previewed before apply.
+- The transport now supports chunked text and binary/file-style payloads too, so future classroom modules are not stuck with tiny one-packet transfers.
+- Click a device name to rename it locally if several nearby machines look too similar.
+- Click the group chip (or `+ Group`) to tag a device by class, table, or role.
+- Click `Trust` for devices you expect to use regularly in the room.
+- Use `Export trusted list` if you want another teacher or support machine to inherit the same remembered classroom devices.
+- Use `Import trusted list` on that other machine so you do not have to rebuild the pairing list by hand.
+- Use `Export blocked list` if another teacher or support machine should inherit the same classroom deny rules.
+- Use `Import blocked list` on that machine when you want the blocked-device policy to travel cleanly too.
+- Use `Select Connected` when you want to act on the current active classroom set quickly.
+- Use the `Find` box to search by name, device ID, address, or group label.
+- Use `Copy ID` or `Copy info` when you need to confirm exactly which device is which.
+- Device IDs now stay stable across restarts, so renamed classroom devices and blocked-device rules stay tied to the same machines.
+- `Allow` approves a device for the current run.
+- `Trust` remembers that device's stable ID for future classroom joins.
+- `Block` denies the device until you deliberately unblock it.
+- If you are hosting a classroom room and need to restart, look for `Resume saved session` in Networking when you come back.
+- If another trusted teacher/support device should take over live, select it and use `Hand off host to selected peer`.
+- If the host device vanishes mid-session, the remaining room devices can use `Take over as host` instead of rebuilding the classroom room from scratch.
+- If the room was hosting a lesson/module session, use `Restore state to bridge` after recovery to put the last cached `shared_state.json` back where the hosted module expects it.
+- Use `Re-share latest state` when rejoining student/support devices need the teacher's last good module session state again.
+- `Replay cached assets` is the companion lane for module-linked lesson files/assets as that recovery path fills out.
+- This is useful for nearby teacher machines, support machines, or local collaboration setups.
+- It is off by default and is not required for normal student or classroom use.
+- Chatty-EDU and Chatty-Cog do not accidentally mix here; they use different local networking identifiers.
+- Custom names and group labels are only local list-management helpers on your machine.
+- Current transfer ceiling is **8 MiB decoded payload size**, split into **64 KiB chunks** with delivery acknowledgement and retry.
+- For a focused plain-language explanation, see `docs/NETWORKING.md`.
+
 ## Data layout (under `./data` or `--base-path`)
 - `config/` settings, UI state, and Bookkeeper memory files
 - `config/bookkeeper/` cold logs plus `memory_jogger.txt`
+- `Chatty_Sandbox/` scratchpad, task ledger, and sandbox working files
 - `homework/outgoing/` pack Markdown
 - `homework/assigned/` pack JSON
 - `homework/completed/` submissions
@@ -105,13 +213,14 @@ Audience: teachers and school IT. Everything runs offline by default; no account
 - `revision/notes/` saved revision notes and progress
 - `revision/past_papers/` imported past papers and teacher revision materials
 - `models/` GGUF files
-- `modules/` manifests
+- `modules/` built-in EDU modules plus drop-in hosted modules
 - `themes/`, `runtime/`, `logs/`, `ide/`
 
 ## Safety and offline
-- Offline-first; no network calls in core flows.
+- Offline-first; no internet or cloud calls in core flows.
 - Content filter (Janet) is on by default.
 - External process modules are disabled unless explicitly allowed.
+- Optional local networking is LAN-only, off by default, and only used when a person enables it.
 - The ECG indicator reads local system counters only. It does not send telemetry anywhere.
 - The visible activity trace is intentionally part of the trust model: it gives schools and families a simple on-screen cue that the app is operating locally and not making hidden calls home as part of normal use.
 
@@ -122,6 +231,10 @@ Audience: teachers and school IT. Everything runs offline by default; no account
 - Revision or chat helper says no valid model is selected: choose a GGUF via File -> Models and confirm the file still exists under `<base>/models/`.
 - Support report: use File -> Copy Diagnostic report, or open the Diagnostics tab and copy it from there.
 - Missing packs or submissions: click "Rescan packs + submissions" and confirm the correct `--base-path`.
+- No EDU peers found in Networking: make sure both devices are on the same trusted local network, at least one device has `Make available for connectivity` turned on, and local firewall policy allows Chatty-EDU on the LAN.
+- EDU peers are visible but still refuse to connect cleanly: check the `Compatibility note` line in Networking. If it mentions protocol/version mismatch, update the older Chatty-EDU copy so both sides are on a reasonably matching build generation.
+- If one room device still uses an older local build from before the chunked-transfer upgrade, it will look incompatible until that older copy is rebuilt or updated.
+- Several EDU peers are visible but hard to tell apart: use `Copy info` to compare IDs or addresses, then rename the devices you use often and add group labels if helpful.
 - Missing worksheet, list, or attachment in student view: confirm it is included in `### Student Printable` or `attachments:` and not only mentioned in the instructions text.
 - Odd symbols or broken table characters in chat: the app now normalizes most model output to plain readable text; if a model still emits malformed content, try a different prompt or GGUF.
 - PIN issues: use Teacher menu or CLI `teacher` -> `forgot`, then set a new PIN.

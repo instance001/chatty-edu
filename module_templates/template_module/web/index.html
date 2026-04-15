@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Template Module</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Template Module</p>
+          <h1>Standalone UI starter</h1>
+          <p class="subtle">
+            This module keeps its own UI and state. When hosted inside Chatty-EDU, it also reports a short handoff through the optional bridge.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <button id="save-state" type="button">Save</button>
+          <button id="reset-state" type="button" class="secondary">Reset</button>
+          <button id="refresh-preview" type="button" class="secondary">Refresh preview</button>
+        </div>
+      </header>
+
+      <section class="stats-grid">
+        <article class="stat-card">
+          <span class="stat-label">Fields filled</span>
+          <strong id="completion-score">0%</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Artifacts listed</span>
+          <strong id="artifact-count">0</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Bridge status</span>
+          <strong id="bridge-status">standalone</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Sync state</span>
+          <strong id="sync-status">local only</strong>
+        </article>
+      </section>
+
+      <main class="workspace-grid">
+        <section class="panel">
+          <h2>Module desk</h2>
+          <label>
+            Module title
+            <input id="module_title" type="text" placeholder="Research Lab, Build Wing, Story Forge..." />
+          </label>
+          <label>
+            Current focus
+            <input id="current_focus" type="text" placeholder="What is this module working on right now?" />
+          </label>
+          <label>
+            Recent changes
+            <textarea id="recent_changes" rows="6" placeholder="Summarize what changed."></textarea>
+          </label>
+          <label>
+            Next action
+            <textarea id="next_action" rows="4" placeholder="What should happen next?"></textarea>
+          </label>
+          <label>
+            Artifacts
+            <textarea id="artifacts" rows="4" placeholder="List files, links, or outputs. One per line is fine."></textarea>
+          </label>
+        </section>
+
+        <section class="panel">
+          <h2>Handoff preview</h2>
+          <p class="subtle">
+            This preview is what your module can send back to Chatty-EDU through the optional bridge.
+          </p>
+          <label>
+            Summary preview
+            <textarea id="summary_preview" rows="6" readonly></textarea>
+          </label>
+          <label>
+            Snapshot preview
+            <textarea id="snapshot_preview" rows="14" readonly></textarea>
+          </label>
+        </section>
+      </main>
+    </div>
+
+    <script src="chattyedu_bridge.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

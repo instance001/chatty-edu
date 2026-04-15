@@ -1,0 +1,9 @@
+{
+  "features": [
+    "shared_state_publish",
+    "shared_state_receive"
+  ],
+  "notes": [
+    "This module can publish and apply mirrored revision state through the portable bridge."
+  ]
+}

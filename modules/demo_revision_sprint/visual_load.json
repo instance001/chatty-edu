@@ -1,0 +1,7 @@
+{
+  "kind": "webview",
+  "auto_launch": true,
+  "title": "Revision Sprint (Demo)",
+  "file": "web/index.html",
+  "notes": "Hosted webview demo for revision planning. State stays inside the module and Chatty-EDU only reads the optional bridge handoff."
+}

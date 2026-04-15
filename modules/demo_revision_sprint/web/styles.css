@@ -1,0 +1,149 @@
+:root {
+  color-scheme: light;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: #f8f5ff;
+  color: #2b2238;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top right, rgba(167, 130, 222, 0.28), transparent 25%),
+    linear-gradient(180deg, #fbf9ff 0%, #f1ecfa 100%);
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hero,
+.panel,
+.stat-card {
+  border: 1px solid rgba(98, 71, 142, 0.18);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 10px 28px rgba(90, 65, 130, 0.08);
+}
+
+.hero {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7c5ab3;
+}
+
+h1,
+h2 {
+  margin: 0 0 8px;
+}
+
+.subtle {
+  margin: 0;
+  color: #5f526f;
+  line-height: 1.5;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.stat-card {
+  padding: 14px 16px;
+}
+
+.stat-label {
+  display: block;
+  color: #5f526f;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.workspace-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.panel {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+}
+
+input,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid rgba(98, 71, 142, 0.22);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fffcff;
+  color: #2b2238;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+button {
+  border: 1px solid rgba(98, 71, 142, 0.26);
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: #7c5ab3;
+  color: #fbf7ff;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: #eee5fb;
+  color: #34254d;
+}
+
+button:hover {
+  filter: brightness(1.03);
+}
+
+@media (max-width: 720px) {
+  .hero {
+    flex-direction: column;
+  }
+}

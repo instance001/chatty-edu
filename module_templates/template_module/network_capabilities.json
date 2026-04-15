@@ -1,0 +1,26 @@
+{
+  "features": [
+    "shared_state_publish",
+    "shared_state_receive",
+    "host_authoritative"
+  ],
+  "asset_lanes": [
+    {
+      "lane_id": "lesson_assets",
+      "label": "Lesson Assets",
+      "direction": "incoming",
+      "delivery_mode": "bridge_inbox",
+      "artifact_kinds": ["module_asset_file", "pack_file"],
+      "accepted_content_types": ["text/markdown", "application/json", "application/octet-stream"],
+      "max_bytes": 8388608,
+      "replayable": true,
+      "notes": [
+        "This starter can optionally accept future classroom assets through the bridge inbox."
+      ]
+    }
+  ],
+  "notes": [
+    "This starter already includes the portable shared-state bridge.",
+    "Add or remove features so the declaration matches the module's real behavior."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "module_id": "your_module_id_here",
+  "event_type": "suspend_rundown",
+  "summary": "Write one short paragraph describing the current state, what changed, and the next useful action.",
+  "snapshot": "# Snapshot\n\nPut the richer state dump here. This can be Markdown-like text, a compact report, or a plain multiline summary.",
+  "tags": [
+    "replace_me",
+    "planning"
+  ],
+  "payload": {
+    "hint": "Put any optional structured values here.",
+    "progress": 0.5
+  },
+  "updated_at_unix_ms": 1774588800000
+}

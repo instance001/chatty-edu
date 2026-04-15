@@ -1,0 +1,11 @@
+{
+  "kind": "native_window",
+  "auto_launch": true,
+  "window_title_contains": "Template Python Module",
+  "notes": "This starter keeps Python app state inside the module folder and only uses the bridge for Chatty-EDU handoff. Requires the `py` launcher.",
+  "launch": {
+    "program": "py",
+    "args": ["-3", "src/main.py"],
+    "cwd": "."
+  }
+}

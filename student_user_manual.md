@@ -1,6 +1,6 @@
 # Chatty-EDU Student Manual (v0.5)
 
-Audience: students with zero setup experience. Everything runs offline; no accounts.
+Audience: students with zero setup experience. Everything runs offline by default; no accounts. Some schools may also use optional local Wi-Fi or LAN connectivity between nearby Chatty-EDU machines.
 
 ## Quick start (prebuilt)
 1. Open `chatty-edu.exe` or run it from a terminal in the folder provided to you.
@@ -45,12 +45,16 @@ Audience: students with zero setup experience. Everything runs offline; no accou
 - If you change computers, keep the whole `data/` folder with you. Run with `--base-path <USB path>` to force data onto the USB.
 - If the tutor says it cannot give the answer, ask for steps, a starting point, or the rule you need.
 - If your homework refers to a worksheet, list, or table and you cannot see it, tell your teacher the pack may be missing the extra material.
+- If your school uses the Networking tab, that is still local school-network sharing between nearby Chatty-EDU devices, not internet chat.
+- If your school uses network-delivered packs or setup bundles, they should appear in inboxes first rather than silently changing your device.
 - Teacher-only settings such as filters, games, and hints-only behavior are locked behind the Teacher PIN.
 - The ECG widget in the top-right corner is a small machine-activity indicator for the local computer. It is there partly for transparency, so you, your teacher, or your family can see when Chatty-EDU is actively doing local work.
 
 ## Staying offline and safe
 - Chatty-EDU works without internet; no cloud calls in normal use.
+- Some schools may choose to use optional local networking between nearby Chatty-EDU devices on the same Wi-Fi or LAN, but that is still local and not the public internet.
 - Content filter (Janet) is on by default to block swears and mature topics.
 - The app stores homework packs, submissions, and chat context locally on the machine you are using.
+- Homework packs, revision packs, and classroom setup bundles can be shared locally between nearby EDU devices, but they still stay inside the local school environment and are not internet syncing.
 - `Chatty's thoughts` is session-only and clears on close. `Memory jogger` is a local cross-session reminder saved on the same machine.
 - The ECG widget is part of that trust story: it is a visible local activity cue, not a hidden tracker, and it helps show that Chatty-EDU is doing work on your computer rather than calling home.
