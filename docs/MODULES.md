@@ -2,6 +2,13 @@
 
 This document describes how to build drop-in modules for `chatty-edu`.
 
+Important boundary:
+
+- Chatty-EDU modules are for the education-specific Chatty-EDU runtime
+- ChattyCog modules are for the broader general-purpose ChattyCog runtime
+- those ecosystems are intentionally kept separate and should not be treated as interchangeable hosts
+- that separation is deliberate for safety and policy reasons, especially around schools, classrooms, and kid-facing use
+
 ## What a module is
 
 A module is a folder dropped into `chatty-edu/modules/`.
@@ -159,6 +166,33 @@ That way:
 - builders who already have a UI do not need to rebuild it for Chatty-EDU
 - builders with no GUI can still make useful EDU modules
 - removing the EDU compatibility plug does not break the standalone tool itself
+
+## Compound workflow design goal
+
+The larger goal is not only to host a lesson tool inside a tab. It is to let specialized modules participate in a compounding in-app workflow.
+
+That can look like:
+
+- the main Chatty-EDU AI helps sketch a lesson, revision pack, or classroom activity
+- a specialist module turns that draft into structured templates or working materials
+- another hosted tool reviews media, worksheets, or visual examples
+- the next module adds prompt, rubric, or training guidance
+- the teacher or learner keeps iterating without dropping out to the desktop between steps
+
+Inside that loop, each lane has a job:
+
+- hosted UI keeps the real specialist tool visible
+- fallback notes or local workspace hold immediate working state
+- bridge files surface status, logs, and approved assets back into the EDU shell
+- room-aware or asset-lane features let classroom-oriented modules take part without losing portability
+
+This matters for pure EDU flows and for wider Chatty ecosystem loops as well. A builder might draft content in an EDU module, refine media in a sibling tool, then bring the result back as a lesson asset. The module system is meant to support that kind of flywheel, not just isolated panels.
+
+Keep the boundary explicit while you do it:
+
+- build for Chatty-EDU when the tool belongs in the school-safe education ecosystem
+- build for ChattyCog when the tool belongs in the broader general-purpose ecosystem
+- do not assume one packaged module should freely move between both hosts without an intentional separate adaptation and review pass
 
 ## Hosted visual load-in
 

@@ -1,8 +1,10 @@
-# Chatty-EDU v0.5.0
+# chatty-edu v0.5.0
 
 Offline, local-first learning assistant for schools. No cloud, no accounts, no tracking. Ships as a single Rust binary with an egui desktop shell (Windows first) plus a CLI mode. Licensed under AGPLv3.
 
-Chatty-EDU never connects to the internet and does not require external services to function. It can also optionally connect to other nearby Chatty-EDU instances over local Wi-Fi or LAN when a user deliberately enables local networking.
+chatty-edu never connects to the internet and does not require external services to function. It can also optionally connect to other nearby chatty-edu instances over local Wi-Fi or LAN when a user deliberately enables local networking.
+
+That peer-to-peer mode is only for chatty-edu-to-chatty-edu connections. It is intentionally incompatible with chatty-cog networking.
 
 Designed for schools and boards:
 - Runs entirely on school hardware; bring your own offline model (GGUF).
@@ -42,6 +44,7 @@ Docs:
 - Standalone module hosting: drop-in modules can now advertise their own native desktop window or browser-style dashboard, and Chatty-EDU can host that real standalone UI in a tab without taking over the module's runtime.
 - Bundled EDU demo modules: lesson planning, revision sprinting, and a native teacher notebook now ship as living examples for educators and builders.
 - Optional local networking: nearby Chatty-EDU instances can discover and connect over local Wi-Fi or LAN, share lightweight presence, send short handoff notes, and move homework packs, revision packs, and classroom setup bundles without using cloud services.
+- Peer-to-peer boundary: chatty-edu networking is intentionally separate from chatty-cog networking, even when both are on the same LAN.
 - Home tab chat mirror: students can keep working on Home while still seeing the latest chat exchange at the bottom of the page.
 - ECG window: a small top-right activity trace acts as a transparency and trust feature, showing visible local activity using Windows hardware counters with GPU-first fallback to CPU.
 - Pack parsing is forgiving around year or grade terminology: `year_level` is canonical, but Markdown import or transcribe also accepts `year`, `year level`, `grade`, `grade level`, and `year group`.
@@ -49,6 +52,56 @@ Docs:
 - Plain-text-safe rendering: model output is normalized before display so unsupported Unicode, prompt-template markers, and odd table characters degrade into readable text instead of broken glyphs.
 - CLI parity: teacher console can `generate_pack_md`, `transcribe_outgoing`, and `convert_submissions_to_md`.
 - Easier builds: local-model support is optional with `cargo build --no-default-features`.
+
+## Compounding workflow loops
+
+Chatty-EDU can also be used as a compound workflow surface, not just a single chat window or homework tool.
+
+Because it combines:
+
+- a main local AI
+- a real local sandbox
+- hosted module tabs
+- bridge or rundown handoff lanes
+- and visible in-app dashboards
+
+it can support iterative "one tool improves the next tool" loops without needing to minimize out to the desktop.
+
+In an EDU context, that can look like:
+
+1. Drafting a lesson pack, revision pack, or classroom activity template with the main AI.
+2. Keeping working notes, rubrics, prompt drafts, or teacher-side planning text in `Chatty_Sandbox/`.
+3. Opening a hosted module tab with a more specialized workflow surface.
+4. Letting Chatty-EDU carry forward the module's status, recent notes, or debrief through the bridge and Bookkeeper rundown flow.
+5. Refining the next revision, printable, prompt, or resource pack with that context still in view.
+
+The same pattern also supports cross-tool creation loops for schools or builders working with the wider Chatty ecosystem.
+For example, a builder or teacher-creator could:
+
+- draft a `chatty-quest` learning or modding dataset template
+- review or iterate on media through a hosted `chatty-art` lane
+- use a `chatty-lora` lane for dataset, prompt, or training advice
+- keep the whole workflow inside the Chatty-EDU shell rather than juggling separate windows
+
+That creates a compounding loop:
+
+- draft
+- test
+- review
+- refine
+- hand off
+- repeat
+
+Why this matters in EDU:
+
+- teachers can keep planning context, resources, and follow-up actions in one place
+- modules can stay specialized without becoming isolated
+- the main AI can act as the connective tissue between lesson design, revision, printables, and hosted tools
+- classroom or builder workflows become easier to iterate because the app keeps the handoff surfaces visible
+
+Chatty-EDU is still an offline, local-first school tool.
+This feature is not about turning it into a cloud platform or giant monolith.
+It is about making multi-step educational and creator workflows easier to compound inside one governed local shell.
 
 ## Project layout (auto-created under `./data` or `--base-path`)
 - `config/` - settings, UI state, and Bookkeeper memory files

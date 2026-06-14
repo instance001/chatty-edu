@@ -20,6 +20,18 @@ That means:
 - keep the plug -> Chatty-EDU-compatible
 - remove the plug -> still works standalone
 
+It does not mean:
+
+- "if it works in Chatty-EDU, it should also be treated as a ChattyCog module"
+
+Those hosts are intentionally separate by design, and the EDU side keeps stricter school and child-safety expectations.
+
+It also means the starter should help you join a larger in-app loop:
+
+- the main Chatty-EDU AI frames or reviews the work
+- your module does specialist work in its own UI
+- the result can hand cleanly to another EDU module, classroom step, or orchestrator pass
+
 ## Fast recommendation
 
 Pick the first one that matches how you want to build:
@@ -112,6 +124,8 @@ No matter which starter you choose, you still get:
 - `visual_load.json` for hosted visual loading
 - `HANDSHAKE.md` for the human-readable department contract
 - optional `bridge/status.json` for handoff back to Chatty-EDU
+
+Those pieces are there so a module can become part of a compounding workflow, not only a one-off utility tab.
 
 ## Suggested default
 

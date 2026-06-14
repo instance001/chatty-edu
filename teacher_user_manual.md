@@ -1,6 +1,8 @@
-# Chatty-EDU Teacher Manual (v0.5)
+# chatty-edu Teacher Manual (v0.5)
 
-Audience: teachers and school IT. Everything runs offline by default; no accounts or cloud calls. Optional local Wi-Fi or LAN connectivity between nearby Chatty-EDU instances is available if you choose to turn it on.
+Audience: teachers and school IT. Everything runs offline by default; no accounts or cloud calls. Optional local Wi-Fi or LAN connectivity between nearby chatty-edu instances is available if you choose to turn it on.
+
+That optional peer mode is only for chatty-edu-to-chatty-edu connections. It does not interoperate with chatty-cog peer networking.
 
 ## What you need
 - Windows PC (first target).
@@ -42,6 +44,7 @@ Audience: teachers and school IT. Everything runs offline by default; no account
    - Open the `Network` menu or `Networking` tab if you want one Chatty-EDU machine to discover or connect to another nearby Chatty-EDU machine.
    - Turn on `Make available for connectivity` on one device, then `Refresh discovery` on the other.
    - This is local Wi-Fi or LAN only. It is not cloud sync.
+   - It is also Chatty-EDU-only peer networking. A nearby ChattyCog machine is not a compatible peer target.
    - Once connected, you can use separate transfer lanes for `Push Pack`, `Push Revision`, and `Push Setup`.
 
 ## Homework basics
@@ -120,6 +123,49 @@ Audience: teachers and school IT. Everything runs offline by default; no account
   - a compact summary back into the persistent `Memory jogger`
 - This is still local-only and still approval-gated. It is meant to improve continuity, not to give the model unrestricted file access.
 
+## Compound workflow loops
+
+Chatty-EDU can also act as a compound workflow shell for teacher planning, lesson building, and hosted-tool iteration.
+
+The pattern is:
+
+- the main AI helps plan or review
+- the sandbox keeps durable working notes and task state
+- hosted modules keep specialized dashboards or tools visible in tabs
+- the bridge or Bookkeeper rundown carries forward what just happened
+- the next step starts with context instead of from zero
+
+In a school workflow, that can look like:
+
+1. Draft a lesson pack, revision pack, printable, or rubric with the main AI.
+2. Keep teacher notes, prompt drafts, or pack structure in `Chatty_Sandbox/`.
+3. Open a hosted module tab for a more specialized workflow surface.
+4. Let Chatty-EDU carry the module's recent status or debrief back into the next teacher step.
+5. Refine the next pack, printable, support note, or revision material from inside the same shell.
+
+For builders or advanced staff working with the wider Chatty ecosystem, the same loop can extend across tools:
+
+- draft a `chatty-quest` learning or modding dataset template
+- review or iterate on media through a hosted `chatty-art` lane
+- use a `chatty-lora` lane for dataset, prompt, or training-plan advice
+- feed those decisions back into the next pass without dropping out into a pile of separate desktop windows
+
+That creates a flywheel:
+
+- draft
+- test
+- review
+- refine
+- hand off
+- repeat
+
+Why this matters:
+
+- teachers can keep planning context, files, and follow-up actions together
+- hosted tools stay specialized without becoming isolated
+- the main AI becomes the connective tissue between lesson design, revision, printables, and creator tooling
+- the whole workflow remains governed, local, and visible
+
 ## CLI admin (quick)
 `cargo run -- --mode cli`
 
@@ -196,6 +242,7 @@ Bundled EDU demo modules also live in `modules/demo_*` so teachers can inspect w
 - This is useful for nearby teacher machines, support machines, or local collaboration setups.
 - It is off by default and is not required for normal student or classroom use.
 - Chatty-EDU and Chatty-Cog do not accidentally mix here; they use different local networking identifiers.
+- Treat that as a deliberate incompatibility boundary, not as a version mismatch that should eventually connect.
 - Custom names and group labels are only local list-management helpers on your machine.
 - Current transfer ceiling is **8 MiB decoded payload size**, split into **64 KiB chunks** with delivery acknowledgement and retry.
 - For a focused plain-language explanation, see `docs/NETWORKING.md`.

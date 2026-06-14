@@ -52,6 +52,17 @@ This is the "here is the module, here is what it needs, here is how to test it" 
 - Expected launch target:
   - ...
 
+## Workflow-loop fit
+
+- Best role in a larger Chatty-EDU workflow:
+  - ...
+- Typical handoff into this module:
+  - ...
+- Typical handoff out of this module:
+  - ...
+- Companion modules or tools:
+  - ...
+
 ## Bridge / handoff support
 
 - Bridge included:
@@ -122,6 +133,7 @@ It keeps the handoff focused on:
 - what the module is
 - how to run it
 - how to test it
+- where it fits in a larger workflow loop
 - what still needs attention
 
 That reduces guesswork and keeps reviews calmer and faster.

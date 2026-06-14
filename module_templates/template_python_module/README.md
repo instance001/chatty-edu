@@ -23,6 +23,13 @@ It lives in `chatty-edu/module_templates/`, so it will **not** auto-appear in Ch
 - optional bridge handoff through `CHATTYEDU_BRIDGE_STATUS`
 - clean behavior inside Chatty-EDU or outside it
 
+## Host boundary
+
+This starter is for Chatty-EDU.
+
+- It is not meant to be reused as a drop-in ChattyCog starter.
+- If you need a broader general-use version, build that as a separate host-targeted module with its own review.
+
 ## First things to rename
 
 - `module_id` in `manifest.json`

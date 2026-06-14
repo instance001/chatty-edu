@@ -23,6 +23,8 @@ That gives you the full loop:
 - `visual_load.json` = host the real UI
 - `bridge/status.json` = let the standalone module report back when it wants to
 
+That split is deliberate. The hosted UI keeps the specialist tool visible while the bridge keeps handoff state visible, which is what lets a teacher or learner move through multi-step in-app loops instead of juggling separate desktop windows.
+
 ## Folder layout
 
 ```text

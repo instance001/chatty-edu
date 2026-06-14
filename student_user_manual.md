@@ -1,6 +1,8 @@
-# Chatty-EDU Student Manual (v0.5)
+# chatty-edu Student Manual (v0.5)
 
-Audience: students with zero setup experience. Everything runs offline by default; no accounts. Some schools may also use optional local Wi-Fi or LAN connectivity between nearby Chatty-EDU machines.
+Audience: students with zero setup experience. Everything runs offline by default; no accounts. Some schools may also use optional local Wi-Fi or LAN connectivity between nearby chatty-edu machines.
+
+That optional peer mode is only for nearby chatty-edu machines. It does not connect to chatty-cog.
 
 ## Quick start (prebuilt)
 1. Open `chatty-edu.exe` or run it from a terminal in the folder provided to you.
@@ -32,6 +34,33 @@ Audience: students with zero setup experience. Everything runs offline by defaul
 - The Revision helper can explain more openly than live homework help because the work is already submitted, but it is still meant to teach and guide rather than just dump answers.
 - Teacher-side scores or diagnostic labels are not shown in the student Revision view.
 
+## Staying in one workflow
+
+You do not always have to bounce between lots of separate windows to use Chatty-EDU well.
+
+A common pattern is:
+
+1. Read the assignment or revision material on Home.
+2. Ask for a hint or explanation in Chat.
+3. Keep your own notes or working draft in the app's local workflow areas.
+4. Return to the assignment or revision screen with that context still fresh.
+
+If your school uses hosted modules, the same idea can extend a bit further:
+
+- the main AI can help explain the next step
+- the hosted module can keep a more specialized tool visible in a tab
+- the app can carry forward recent context instead of making you restart from scratch each time
+
+In plain language:
+
+- ask
+- work
+- check
+- improve
+- continue
+
+That is useful for longer tasks because Chatty-EDU is designed to help you keep the workflow moving inside one local app rather than forcing you to juggle lots of separate windows.
+
 ## File locations (auto-created under `data/`)
 - `homework/assigned/` - homework packs (`homework_pack_*.json`)
 - `homework/completed/` - your exported submissions (`submission_*.json`)
@@ -46,6 +75,7 @@ Audience: students with zero setup experience. Everything runs offline by defaul
 - If the tutor says it cannot give the answer, ask for steps, a starting point, or the rule you need.
 - If your homework refers to a worksheet, list, or table and you cannot see it, tell your teacher the pack may be missing the extra material.
 - If your school uses the Networking tab, that is still local school-network sharing between nearby Chatty-EDU devices, not internet chat.
+- It is also only for Chatty-EDU devices. A nearby ChattyCog machine is not a compatible peer target.
 - If your school uses network-delivered packs or setup bundles, they should appear in inboxes first rather than silently changing your device.
 - Teacher-only settings such as filters, games, and hints-only behavior are locked behind the Teacher PIN.
 - The ECG widget in the top-right corner is a small machine-activity indicator for the local computer. It is there partly for transparency, so you, your teacher, or your family can see when Chatty-EDU is actively doing local work.

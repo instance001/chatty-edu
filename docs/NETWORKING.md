@@ -16,6 +16,12 @@ This is for:
 
 This is **not** a cloud feature.
 
+Important compatibility boundary:
+
+- Chatty-EDU peer-to-peer networking only works with other Chatty-EDU instances
+- it is intentionally incompatible with ChattyCog peer networking
+- that is by design, not a bug, and not something a version update is expected to "fix"
+
 ## What it is not
 
 Chatty-EDU networking is **not**:
@@ -232,7 +238,8 @@ The target is simply solid local-room transfers that a future EDU module builder
 - Networking is **local only**.
 - It is **off by default** until a user enables availability.
 - It is meant for **nearby EDU peers**, not public internet access.
-- Chatty-EDU and Chatty-Cog use different local networking identifiers, so they do **not** accidentally connect to each other.
+- Chatty-EDU and Chatty-Cog use different local networking identifiers and different peer-network expectations, so they do **not** connect to each other.
+- A ChattyCog device is not a compatible Chatty-EDU peer target, even on the same LAN.
 
 ## Offline promise, clarified
 
@@ -264,6 +271,7 @@ If nearby EDU peers still do not connect cleanly:
 - make sure both machines are on reasonably matching Chatty-EDU builds
 - older local builds from before the chunked-transfer upgrade will show up as incompatible until they are rebuilt or updated
 - remember that Chatty-EDU and Chatty-Cog intentionally use different local protocols and will not interconnect
+- if one side is ChattyCog, treat that as an unsupported peer pairing rather than a fixable same-family mismatch
 
 This feature is a convenience layer, not a hardened trust boundary. Schools should still rely on:
 - normal firewall policy

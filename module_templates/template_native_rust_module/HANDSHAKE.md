@@ -7,6 +7,13 @@
 
 This is a starter native Rust department. Replace this with a short description of what your module actually does.
 
+## Host boundary
+
+This starter handshake is for a Chatty-EDU module.
+
+- If you later want a general-use version, make a separate ChattyCog-targeted variant.
+- Do not assume the same packaged module should move between both hosts unchanged.
+
 ## Inputs this module expects
 
 - Replace with the information your module needs from the user

@@ -19,6 +19,36 @@ This is the simple compatibility rule:
 
 If you remove the bridge logic, the module still works standalone. It just stops reporting back to Chatty-EDU.
 
+## Why the bridge matters in practice
+
+The bridge is the handoff lane that lets a hosted EDU module join a bigger workflow instead of behaving like an isolated tab.
+
+Typical pattern:
+
+- Chatty-EDU helps frame the lesson, revision, or classroom task
+- a specialist hosted module does focused work in its own UI
+- the module reports status, logs, or waiting assets through the bridge
+- the teacher, learner, or next module picks that state up for the next pass
+
+That supports compound loops such as:
+
+- drafting a structured activity or dataset template
+- reviewing companion media or examples in a neighboring module
+- feeding the result into another tool for prompt, rubric, or training guidance
+- iterating again without leaving the Chatty-EDU shell
+
+The bridge keeps those handoffs standardized while still letting each module remain a standalone tool outside EDU.
+
+## Host boundary
+
+This bridge contract is for Chatty-EDU-hosted modules.
+
+- Chatty-EDU and ChattyCog intentionally use different host ecosystems
+- their bridge helpers, policies, and runtime assumptions may look similar, but they are not meant to be mixed casually
+- if you want versions of a tool in both ecosystems, treat that as two deliberate host targets
+
+That separation is by design, especially because the EDU side is held to stricter classroom and child-safety expectations.
+
 Quick helpers:
 
 - `chatty-edu/docs/MODULE_BRIDGE_SNIPPETS.md`

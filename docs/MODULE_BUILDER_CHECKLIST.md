@@ -33,6 +33,12 @@ Rule of thumb:
 - Chatty-EDU should host the module
 - Chatty-EDU should not become the module's real runtime brain
 
+Design target:
+
+- build the module so it can participate in a larger in-app workflow loop, not just open as an isolated tab
+- assume a teacher or learner may move between the main EDU AI, this module, and sibling specialist tools without leaving the shell
+- keep the host target explicit: Chatty-EDU modules are not the same thing as ChattyCog modules, even if the tool idea overlaps
+
 ## 4) Add visual hosting
 
 Create or update `visual_load.json`.
@@ -74,6 +80,7 @@ Goal:
 - module optionally reports a short `summary` + `snapshot`
 - if the module already has useful logs, it can declare them for Chatty-EDU to tail
 - Chatty-EDU reads that handoff when the module tab is left or closed
+- the next teacher, learner, or module pass should be able to pick that handoff up without guesswork
 
 For webviews:
 
@@ -103,6 +110,7 @@ Avoid:
 - treating the bridge as the module's main database
 - coupling the module tightly to Chatty-EDU internals
 - assuming the bridge exists when the app runs standalone
+- assuming an EDU module should automatically be dropped into ChattyCog without a separate intentional adaptation and safety review
 
 ## 8) Test both modes
 
@@ -149,4 +157,5 @@ A module is in good shape when:
 - it runs standalone
 - it can be hosted inside a Chatty-EDU tab
 - it reports a clean suspend handoff through the optional bridge
+- it plays nicely with multi-step lesson, revision, or classroom workflow loops
 - it stays simple enough that removing the plug cleanly removes Chatty-EDU compatibility without breaking the tool itself
