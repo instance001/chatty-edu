@@ -59,10 +59,11 @@ use deunicode::deunicode;
 use eframe::{
     egui::{
         self, menu, scroll_area::ScrollBarVisibility, Align, CentralPanel, Context, Layout,
-        ProgressBar, RichText, ScrollArea, TopBottomPanel,
+        ProgressBar, RichText, ScrollArea, TextureHandle, TopBottomPanel,
     },
     App, CreationContext,
 };
+use image::ImageReader;
 use rfd::FileDialog;
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
@@ -113,6 +114,10 @@ Output rules:\n\
 Quality:\n\
 - Keep it clear, age-appropriate, and easy to complete.\n\
 - Prefer a short list of tasks/questions.\n";
+
+const FMI_SPLASH_DURATION: Duration = Duration::from_millis(3000);
+const FMI_SPLASH_TEXTURE_ID: &str = "chatty_edu_fmi_startup_splash";
+const FMI_SPLASH_RELATIVE_PATH: &str = "assets/branding/fmi-splash-wordmark.png";
 
 #[derive(Debug, Clone, Default)]
 struct AssignmentDraft {
@@ -780,6 +785,9 @@ pub struct ChattyApp {
     networking_shared_chat_presence_next_sync_at: Option<Instant>,
     networking_seen_handoffs: HashSet<String>,
     networking_seen_artifacts: HashSet<String>,
+    startup_splash_active: bool,
+    startup_splash_started_at: Instant,
+    startup_splash_texture: Option<TextureHandle>,
 }
 
 impl ChattyApp {
@@ -835,6 +843,12 @@ impl ChattyApp {
                 .map(|a| a.id.clone())
         });
         let teacher_secret_question = settings.teacher_secret_question.clone();
+        let startup_splash_texture = load_local_png_texture(
+            &cc.egui_ctx,
+            &base_path.join(FMI_SPLASH_RELATIVE_PATH),
+            FMI_SPLASH_TEXTURE_ID,
+        )
+        .ok();
 
         let mut app = Self {
             settings,
@@ -978,6 +992,9 @@ impl ChattyApp {
             networking_shared_chat_presence_next_sync_at: Some(Instant::now()),
             networking_seen_handoffs: HashSet::new(),
             networking_seen_artifacts: HashSet::new(),
+            startup_splash_active: true,
+            startup_splash_started_at: Instant::now(),
+            startup_splash_texture,
         };
         if !app.settings.network_device_name.trim().is_empty() {
             let saved_name = app.settings.network_device_name.clone();
@@ -8471,6 +8488,8 @@ impl ChattyApp {
             ui.menu_button("Help", |ui| {
                 ui.label(format!("Chatty-EDU v{} (egui)", env!("CARGO_PKG_VERSION")));
                 ui.label(format!("Base path: {}", self.base_path.display()));
+                ui.separator();
+                self.render_fmi_about(ui);
             });
         });
     }
@@ -8634,6 +8653,8 @@ impl ChattyApp {
         }
         ui.label(format!("Teacher mode: {}", self.settings.teacher_mode));
         ui.label(format!("Available modules: {}", self.modules.len()));
+        ui.separator();
+        self.render_fmi_about(ui);
         ui.separator();
         ScrollArea::vertical()
             .auto_shrink([false; 2])
@@ -15879,6 +15900,72 @@ Do not use absolute paths. Stay inside `{}/`.\n",
         }
         self.chat_input.clear();
     }
+
+    fn render_fmi_about(&self, ui: &mut egui::Ui) {
+        egui::CollapsingHeader::new("About Fractal Media Infrastructure")
+            .id_source("chatty_edu_fmi_about")
+            .show(ui, |ui| {
+                ui.label(
+                    "Chatty-EDU is stewarded within Fractal Media Infrastructure as a local-first learning tool.",
+                );
+                ui.small("Steward: Fractal Media Infrastructure (FMI)");
+                ui.small("Site: instance001.github.io");
+                ui.small("License: AGPL-3.0-or-later");
+                ui.small(
+                    "Focus: offline-first educational tooling, portable classroom workflows, and user-owned local operation.",
+                );
+            });
+    }
+
+    fn show_startup_splash(&mut self, ctx: &Context) -> bool {
+        if !self.startup_splash_active {
+            return false;
+        }
+
+        let should_dismiss = self.startup_splash_started_at.elapsed() >= FMI_SPLASH_DURATION
+            || ctx.input(|input| {
+                input.pointer.any_click()
+                    || input.key_pressed(egui::Key::Enter)
+                    || input.key_pressed(egui::Key::Space)
+                    || input.key_pressed(egui::Key::Escape)
+            });
+        if should_dismiss {
+            self.startup_splash_active = false;
+            return false;
+        }
+
+        ctx.request_repaint_after(Duration::from_millis(16));
+        CentralPanel::default()
+            .frame(
+                egui::Frame::none()
+                    .fill(egui::Color32::from_rgb(246, 244, 239))
+                    .inner_margin(egui::Margin::same(24.0)),
+            )
+            .show(ctx, |ui| {
+                ui.with_layout(
+                    egui::Layout::centered_and_justified(egui::Direction::TopDown),
+                    |ui| {
+                        ui.vertical_centered(|ui| {
+                            if let Some(texture) = &self.startup_splash_texture {
+                                let size = texture.size_vec2();
+                                let max_width = ui.available_width().min(520.0);
+                                let scale = if size.x > 0.0 {
+                                    (max_width / size.x).min(1.0)
+                                } else {
+                                    1.0
+                                };
+                                ui.image((texture.id(), size * scale));
+                                ui.add_space(18.0);
+                            }
+                            ui.heading("Fractal Media Infrastructure");
+                            ui.label("Local-first educational tooling and classroom workflows.");
+                            ui.small("Press click, Enter, Space, or Esc to continue.");
+                        });
+                    },
+                );
+            });
+        true
+    }
 }
 fn render_markdown(ui: &mut egui::Ui, text: &str) {
     for line in text.lines() {
@@ -16704,6 +16791,10 @@ impl App for ChattyApp {
         ctx.request_repaint_after(self.ecg_window.refresh_interval());
         self.module_host_targets.clear();
 
+        if self.show_startup_splash(ctx) {
+            return;
+        }
+
         TopBottomPanel::top("menu_bar").show(ctx, |ui| self.render_menu_bar(ctx, ui));
         TopBottomPanel::top("tabs").show(ctx, |ui| self.render_tab_bar(ui));
 
@@ -17036,4 +17127,23 @@ pub fn launch_gui(base_path: PathBuf, settings: Settings) -> eframe::Result<()> 
             Box::new(app)
         }),
     )
+}
+
+fn load_local_png_texture(
+    ctx: &Context,
+    path: &Path,
+    texture_id: &str,
+) -> io::Result<TextureHandle> {
+    let image = ImageReader::open(path)?
+        .decode()
+        .map_err(|err| io::Error::new(io::ErrorKind::InvalidData, err))?
+        .to_rgba8();
+    let size = [image.width() as usize, image.height() as usize];
+    let pixels = image.into_vec();
+    let color_image = egui::ColorImage::from_rgba_unmultiplied(size, &pixels);
+    Ok(ctx.load_texture(
+        texture_id.to_string(),
+        color_image,
+        egui::TextureOptions::LINEAR,
+    ))
 }

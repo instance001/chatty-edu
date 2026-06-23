@@ -20,6 +20,7 @@ dirs = "5.0"
 clap = { version = "4.5", features = ["derive"] }
 crossbeam-channel = "0.5"
 eframe = "0.27"
+image = { version = "0.25", default-features = false, features = ["png"] }
 module_host_support = { path = "module_host_support" }
 chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
 rfd = "0.14"
