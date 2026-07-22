@@ -1,8 +1,10 @@
 # chatty-edu v0.5.0
 
-Offline, local-first learning assistant for schools. No cloud, no accounts, no tracking. Ships as a single Rust binary with an egui desktop shell (Windows first) plus a CLI mode. Licensed under AGPLv3.
+Offline, local-first learning assistant for schools. No cloud dependency, no accounts, no tracking. Ships as a single Rust binary with an egui desktop shell (Windows first) plus a CLI mode. Licensed under AGPLv3.
 
-chatty-edu never connects to the internet and does not require external services to function. It can also optionally connect to other nearby chatty-edu instances over local Wi-Fi or LAN when a user deliberately enables local networking.
+chatty-edu never connects to the internet in normal use and does not require external services to function. In this repo, offline-first is a school deployment boundary and trust feature. Across the wider Chatty ecosystem, other tools may offer cloud-optional provider lanes when a user deliberately chooses them.
+
+It can also optionally connect to other nearby chatty-edu instances over local Wi-Fi or LAN when a user deliberately enables local networking.
 
 That peer-to-peer mode is only for chatty-edu-to-chatty-edu connections. It is intentionally incompatible with chatty-cog networking.
 
