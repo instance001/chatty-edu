@@ -55,6 +55,43 @@ Docs:
 - CLI parity: teacher console can `generate_pack_md`, `transcribe_outgoing`, and `convert_submissions_to_md`.
 - Easier builds: local-model support is optional with `cargo build --no-default-features`.
 
+## School Workflow Map
+
+```mermaid
+flowchart TB
+    school["School device<br/>offline-first trust boundary"] --> shell["Chatty-EDU shell<br/>Home, Chat, Homework, Revision, Modules, Sandbox, Networking"]
+
+    models["data/models/<br/>district-approved GGUFs"] --> roles["Automatic model roles<br/>main chat + optional Bookkeeper"]
+    roles --> chat["Main local AI<br/>student help, teacher drafting, revision support"]
+    shell --> chat
+
+    teacher["Teacher unlock<br/>PIN-gated controls"] --> dashboard["Teacher Dashboard<br/>pack drafting, transcription, marking, exports"]
+    dashboard --> outgoing["homework/outgoing/<br/>Markdown-first teacher packs"]
+    outgoing --> assigned["homework/assigned/<br/>student-ready JSON packs"]
+    assigned --> home["Student Home<br/>assignment, worksheet, attachments, chat mirror"]
+    home --> submissions["homework/completed/<br/>hash-chained submissions"]
+    submissions --> marking["homework/marking/<br/>reviewable marking sheets"]
+    dashboard --> printables["homework/printables + rubrics<br/>paper workflow outputs"]
+
+    chat --> guardrails["Homework guardrails<br/>hints over direct answers"]
+    guardrails --> home
+    chat --> memory["Tri-helix memory<br/>session thoughts, memory jogger, Bookkeeper log"]
+    memory --> chat
+
+    shell --> sandbox["Chatty_Sandbox/<br/>approved scratchpad + task ledger"]
+    sandbox --> chat
+
+    shell --> modules["Hosted EDU modules<br/>lesson studio, revision sprint, teacher notebook"]
+    modules --> bridge["Module bridge / rundown<br/>status, logs, handoff context"]
+    bridge --> memory
+
+    shell --> peers["Optional EDU-only LAN peers<br/>homework, revision, setup bundles"]
+    peers --> inbox["network_inbox/<br/>preview before apply"]
+    inbox --> assigned
+
+    shell -. local activity only .-> ecg["ECG window<br/>visible device activity, not telemetry"]
+```
+
 ## Compounding workflow loops
 
 Chatty-EDU can also be used as a compound workflow surface, not just a single chat window or homework tool.
