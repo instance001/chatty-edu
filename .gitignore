@@ -1,6 +1,8 @@
 /target
 /data/
 /models/
+__pycache__/
+*.py[cod]
 
 homework/assigned/*.json
 homework/completed/*.json

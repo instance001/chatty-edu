@@ -50,7 +50,7 @@ Docs:
 - Home tab chat mirror: students can keep working on Home while still seeing the latest chat exchange at the bottom of the page.
 - ECG window: a small top-right activity trace acts as a transparency and trust feature, showing visible local activity using Windows hardware counters with GPU-first fallback to CPU.
 - Pack parsing is forgiving around year or grade terminology: `year_level` is canonical, but Markdown import or transcribe also accepts `year`, `year level`, `grade`, `grade level`, and `year group`.
-- Automatic model role selection: on boot, Chatty-EDU scans `data/models/`, gives the largest valid GGUF to the main chat role, gives the smallest to the Bookkeeper role when 2+ models are present, and falls back to a friendly setup message when no model is available.
+- Automatic model role selection: on boot, Chatty-EDU scans the active `models/` folder, gives the largest valid GGUF to the main chat role, gives the smallest to the Bookkeeper role when 2+ models are present, and falls back to a friendly setup message when no model is available.
 - Plain-text-safe rendering: model output is normalized before display so unsupported Unicode, prompt-template markers, and odd table characters degrade into readable text instead of broken glyphs.
 - CLI parity: teacher console can `generate_pack_md`, `transcribe_outgoing`, and `convert_submissions_to_md`.
 - Easier builds: local-model support is optional with `cargo build --no-default-features`.
@@ -61,7 +61,7 @@ Docs:
 flowchart TB
     school["School device<br/>offline-first trust boundary"] --> shell["Chatty-EDU shell<br/>Home, Chat, Homework, Revision, Modules, Sandbox, Networking"]
 
-    models["data/models/<br/>district-approved GGUFs"] --> roles["Automatic model roles<br/>main chat + optional Bookkeeper"]
+    models["active base/models/<br/>district-approved GGUFs"] --> roles["Automatic model roles<br/>main chat + optional Bookkeeper"]
     roles --> chat["Main local AI<br/>student help, teacher drafting, revision support"]
     shell --> chat
 
@@ -142,7 +142,11 @@ Chatty-EDU is still an offline, local-first school tool.
 This feature is not about turning it into a cloud platform or giant monolith.
 It is about making multi-step educational and creator workflows easier to compound inside one governed local shell.
 
-## Project layout (auto-created under `./data` or `--base-path`)
+## Data layout
+
+Chatty-EDU creates its working folders on first run. In a source checkout, the default base path is the repository root so developer data stays visible. In a packaged binary, the default base path is `data/` beside the executable. Use `--base-path <path>` to make the app use an explicit portable or shared location.
+
+The active base path contains:
 - `config/` - settings, UI state, and Bookkeeper memory files
 - `config/bookkeeper/` - `cold_log.jsonl` plus persistent `memory_jogger.txt`
 - `homework/outgoing/` - teacher-authored packs in Markdown (`*.md`) to be transcribed into `homework/assigned/`
@@ -170,10 +174,10 @@ It is about making multi-step educational and creator workflows easier to compou
 - To build without the local model backend: `cargo build --no-default-features`.
 
 ## Models (bundled plus swap-in)
-- Model binaries are not included in the repo; drop an approved GGUF into `data/models/` (or your chosen `--base-path`) and select it via File -> Models.
+- Model binaries are not included in the repo; drop an approved GGUF into the active `models/` folder and select it via File -> Models.
 - Model-agnostic: drop in your preferred GGUF models and select them via File -> Models; districts are expected to use their approved models.
-- At startup, Chatty-EDU auto-scans `data/models/`: the largest valid GGUF becomes the main AI, the smallest becomes the Bookkeeper role when 2+ models exist, and a single-model install keeps Bookkeeper in keyword-only mode.
-- If no GGUF is present, the app shows a friendly "drop a GGUF into `data/models/` to get started" message instead of a raw path error.
+- At startup, Chatty-EDU auto-scans the active `models/` folder: the largest valid GGUF becomes the main AI, the smallest becomes the Bookkeeper role when 2+ models exist, and a single-model install keeps Bookkeeper in keyword-only mode.
+- If no GGUF is present, the app shows a friendly setup message instead of a raw path error.
 - The local model runs in an internal worker process so incompatible GGUFs fail with an error instead of hard-crashing the app.
 - Very large models may still be slow or exceed RAM on school devices; prefer smaller GGUFs.
 - Model guidance and attribution: see `resources/models/` (for example `resources/models/qwen/README.md`) for supported third-party variants and licensing notes; no weights are shipped.
@@ -201,9 +205,9 @@ cargo run -- --mode gui --base-path D:\ChattyData
 - Networking: open the `Networking` tab from `View` or `Network` to make this device visible on the local LAN, discover nearby EDU peers, connect, disconnect, send handoff notes, push homework packs or revision packs, send classroom setup bundles, and locally rename/group devices so larger classroom lists stay manageable.
 - Modules: drop-in modules can open as closable tabs, host their own real native or web UI when they advertise `visual_load.json`, and optionally report status back through the portable EDU bridge.
 - Demos: bundled hosted demo modules live under `modules/demo_*` so builders can inspect working portable examples.
-- Models: File -> Models to pick a GGUF from `data/models/`, inspect the current auto-assigned main or Bookkeeper roles, refresh after you drop one in, or open the teacher-only Bookkeeper logs tab once unlocked.
+- Models: File -> Models to pick a GGUF from the active `models/` folder, inspect the current auto-assigned main or Bookkeeper roles, refresh after you drop one in, or open the teacher-only Bookkeeper logs tab once unlocked.
 - Teacher lock: Teacher menu -> unlock with PIN (default PIN `0000`, intended to be changed on first teacher unlock) or secret answer (default answer `Math`, also intended to be changed on first teacher unlock). Teacher Dashboard is hidden until unlocked.
-- Homework packs: author packs in Markdown under `data/homework/outgoing/` and transcribe to JSON via the Teacher Dashboard, or import JSON packs via Home or the Teacher menu.
+- Homework packs: author packs in Markdown under `homework/outgoing/` in the active base path and transcribe to JSON via the Teacher Dashboard, or import JSON packs via Home or the Teacher menu.
 - Sharing: homework packs are simple files. Share a pack `.md` or `.json` with other teachers or schools, including any referenced attachments.
 - Setup bundles: use `Push Setup` in Networking when you want to mirror lesson-wide EDU settings to selected nearby devices without also pushing the actual homework or revision content.
 - Home tab: selected assignment preview, worksheet or handout rendering, text attachment previews when possible, submission area, and a compact mirror of the live chat.
@@ -213,9 +217,9 @@ cargo run -- --mode gui --base-path D:\ChattyData
 - Homework guardrails: Home and Chat both intercept active assignment questions and steer them back toward hints instead of full answers.
 - Revision module: separate from live homework; it uses completed submissions plus past papers, stores notes under `revision/notes/`, and gives a more open revision helper while hiding teacher-side scores or diagnostic labels from student view.
 - Submissions: type answers, add attachments, export submission JSON with a hash-chained event log (`start`, `answer`, `hint`, `retry`, `finalize`) and `final_hash` for tamper-evidence.
-- Marking: Teacher Dashboard can convert completed submission JSON files into Markdown marking sheets under `data/homework/marking/`.
-- Printables: Teacher Dashboard can export student printables to `data/homework/printables/`.
-- Rubrics: Teacher Dashboard can export teacher rubrics to `data/homework/rubrics/`.
+- Marking: Teacher Dashboard can convert completed submission JSON files into Markdown marking sheets under `homework/marking/` in the active base path.
+- Printables: Teacher Dashboard can export student printables to `homework/printables/` in the active base path.
+- Rubrics: Teacher Dashboard can export teacher rubrics to `homework/rubrics/` in the active base path.
 - Metrics: class or subject averages, per-student bars, multi-student selection, submissions summary, and separate revision tools in the Homework Dashboard.
 - ECG window: a small indicator in the tab chrome shows recent system activity and refreshes on a lightweight hardware polling cycle. Its purpose is transparency as much as diagnostics, so schools, students, and parents can see when Chatty-EDU is actively doing local work.
 - Themes: switch via View; presets include `classic_light`, `chalkboard_dark`, and `high_contrast`.

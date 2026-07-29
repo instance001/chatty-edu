@@ -13,7 +13,7 @@ That optional peer mode is only for chatty-edu-to-chatty-edu connections. It doe
 1. Build or run: `cargo run -- --mode gui` (add `--base-path ...` for a USB path).
 2. Models (offline AI):
    - Bring your own GGUF model; none is included in this repo.
-   - Drop any GGUF into `data/models/`. On startup, Chatty-EDU auto-scans that folder and assigns the largest valid GGUF to the main AI role.
+   - Drop any GGUF into the active `models/` folder. Packaged builds create this under `data/models/` beside the executable; `--base-path` can point it somewhere else. On startup, Chatty-EDU auto-scans that folder and assigns the largest valid GGUF to the main AI role.
    - If 2 or more valid GGUFs are present, the smallest detected model is assigned to the Bookkeeper role. If only 1 model is present, Bookkeeper stays in keyword-only summary mode.
    - You can still override or inspect roles via File -> Models.
    - Incompatible GGUFs now fail with an error instead of hard-crashing the app; very large models may still be slow or exceed RAM.
@@ -22,9 +22,9 @@ That optional peer mode is only for chatty-edu-to-chatty-edu connections. It doe
    - Default PIN is `0000`. Teacher menu -> unlock with PIN, or use the secret answer if you have set one.
    - While unlocked, change the PIN, set the secret question or answer, adjust game settings, and configure hints-only mode. Lock when done.
 4. Import or build packs:
-   - Option A (Markdown-first): put a pack `.md` into `data/homework/outgoing/` or generate it in the Teacher Dashboard, then click "Transcribe outgoing (.md -> .json)".
-   - Option B (JSON): import a pack `.json` into `data/homework/assigned/` via the Home tab or Teacher menu.
-   - Home tab -> "Import pack file" copies a pack into `data/homework/assigned/`.
+   - Option A (Markdown-first): put a pack `.md` into `homework/outgoing/` under the active base path or generate it in the Teacher Dashboard, then click "Transcribe outgoing (.md -> .json)".
+   - Option B (JSON): import a pack `.json` into `homework/assigned/` under the active base path via the Home tab or Teacher menu.
+   - Home tab -> "Import pack file" copies a pack into the active `homework/assigned/` folder.
    - Sample pack: `resources/homework_pack_sample_bundle.json`. If you use the sample attachment, copy `resources/attachments/` alongside the pack.
    - Or use the Pack builder to create and export a pack.
 5. Review and tutor:
@@ -34,8 +34,8 @@ That optional peer mode is only for chatty-edu-to-chatty-edu connections. It doe
    - Chat now includes two student-facing memory sidebars: `Chatty's thoughts` for current-session context on the left and `Memory jogger` for recent cross-session reminders on the right.
    - Revision is now a separate workflow from live homework. It pulls from completed homework, stores notes or progress under `revision/notes/`, and can include past papers under `revision/past_papers/`.
    - The Homework Dashboard now includes separate Revision teacher tools for opening Revision, creating revision packs, and importing past papers.
-   - Submissions are written to `data/homework/completed/` and include a hash-chained event log (`start`, `answer`, `hint`, `retry`, `finalize`) plus a `final_hash` for tamper-evidence.
-   - Sandbox: the permanent `Sandbox` tab gives Chatty-EDU a real local working area under `data/Chatty_Sandbox/` with a scratchpad, structured task ledger, and approval-gated file actions for longer multi-step work.
+   - Submissions are written to `homework/completed/` under the active base path and include a hash-chained event log (`start`, `answer`, `hint`, `retry`, `finalize`) plus a `final_hash` for tamper-evidence.
+   - Sandbox: the permanent `Sandbox` tab gives Chatty-EDU a real local working area under `Chatty_Sandbox/` in the active base path with a scratchpad, structured task ledger, and approval-gated file actions for longer multi-step work.
 6. Watch the ECG window:
    - A small ECG indicator appears in the tab chrome.
    - It samples local Windows hardware activity roughly every 1.5 seconds and is intended as a quick "is the machine busy?" signal, not grading or network telemetry.

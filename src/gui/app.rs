@@ -8007,7 +8007,10 @@ impl ChattyApp {
                     };
                     if models.is_empty() {
                         ui.label("No GGUF models found yet.");
-                        ui.label("Drop a GGUF into data/models/ to get started.");
+                        ui.label(format!(
+                            "Drop a GGUF into {} to get started.",
+                            self.base_path.join("models").display()
+                        ));
                     } else {
                         ui.label(format!("Main AI role: {main_role_label}"));
                         if self.teacher_unlocked {
@@ -8640,7 +8643,10 @@ impl ChattyApp {
         ui.heading("Home");
         ui.label(format!("Base path: {}", self.base_path.display()));
         if self.available_models.is_empty() || self.settings.model.path.trim().is_empty() {
-            ui.label("AI setup: Drop a GGUF into data/models/ to get started.");
+            ui.label(format!(
+                "AI setup: Drop a GGUF into {} to get started.",
+                self.base_path.join("models").display()
+            ));
         } else {
             let current_model = Path::new(&self.settings.model.path)
                 .file_name()

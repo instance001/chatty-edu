@@ -2,7 +2,7 @@ use crate::local_model;
 use crate::settings::{JanetConfig, Settings};
 
 fn no_model_selected_message() -> String {
-    "Chatty is not ready yet. Drop a GGUF into data/models/ to get started, or ask a teacher to choose one in File -> Models.".to_string()
+    "Chatty is not ready yet. Drop a GGUF into the active models folder to get started, or ask a teacher to choose one in File -> Models.".to_string()
 }
 
 fn friendly_model_error(err: &str) -> String {
@@ -16,7 +16,7 @@ fn friendly_model_error(err: &str) -> String {
         || lower.contains("could not open model file")
         || lower.contains("could not read model file header")
     {
-        return "I couldn't run the local model because the selected file does not look usable. Drop a valid GGUF into data/models/ or ask a teacher to choose one in File -> Models.".to_string();
+        return "I couldn't run the local model because the selected file does not look usable. Drop a valid GGUF into the active models folder or ask a teacher to choose one in File -> Models.".to_string();
     }
 
     if lower.contains("local model support is disabled") {
@@ -31,7 +31,7 @@ fn friendly_model_error(err: &str) -> String {
         return "I couldn't run the local model because this GGUF appears incompatible with the current build. Try a different model in File -> Models.".to_string();
     }
 
-    "I couldn't run the local model right now. Drop a GGUF into data/models/ to get started, or ask a teacher to check File -> Models.".to_string()
+    "I couldn't run the local model right now. Drop a GGUF into the active models folder to get started, or ask a teacher to check File -> Models.".to_string()
 }
 
 pub fn generate_answer(settings: &Settings, user_input: &str) -> String {

@@ -6,11 +6,11 @@ That optional peer mode is only for nearby chatty-edu machines. It does not conn
 
 ## Quick start (prebuilt)
 1. Open `chatty-edu.exe` or run it from a terminal in the folder provided to you.
-2. Models: if a GGUF is already present in `data/models/`, Chatty-EDU will try to auto-select it at startup. If your teacher gives you a GGUF, put it in `data/models/` and choose it via File -> Models if needed. Model guidance lives in `resources/models/` (for example `resources/models/qwen/README.md`).
-3. Import homework: Home tab -> "Import pack file" to load `homework_pack_*.json`, or copy it into `data/homework/assigned/`.
+2. Models: if a GGUF is already present in the active `models/` folder, Chatty-EDU will try to auto-select it at startup. In a prebuilt folder, that usually means `data/models/` beside `chatty-edu.exe`. If your teacher gives you a GGUF, put it there and choose it via File -> Models if needed. Model guidance lives in `resources/models/` (for example `resources/models/qwen/README.md`).
+3. Import homework: Home tab -> "Import pack file" to load `homework_pack_*.json`, or copy it into `homework/assigned/` under the active base path.
 4. Pick your assignment on Home and read the instructions.
 5. Under "Submit work", type your answers. Add attachments if your teacher asked for them.
-6. Click "Export submission file" to save `submission_<assignment_id>_<your_id>.json` into `data/homework/completed/`. Upload that JSON and any attachments using your normal hand-in method.
+6. Click "Export submission file" to save `submission_<assignment_id>_<your_id>.json` into `homework/completed/` under the active base path. Upload that JSON and any attachments using your normal hand-in method.
 
 ## Quick start (build yourself)
 1. Install Rust (`https://rustup.rs`). Local model builds also require CMake and a C or C++ toolchain.
@@ -19,7 +19,7 @@ That optional peer mode is only for nearby chatty-edu machines. It does not conn
 4. Follow the same steps as the prebuilt quick start.
 
 ## Homework
-- Homework packs live in `data/homework/assigned/`. If you do not see yours, click "Rescan packs + submissions" on Home.
+- Homework packs live in `homework/assigned/` under the active base path. If you do not see yours, click "Rescan packs + submissions" on Home.
 - Home shows your selected assignment, any worksheet or handout text included with it, and previews of text attachments when possible.
 - The shared chat bar on Home and the main Chat tab both become homework-aware when an assignment is active. If you ask the assignment directly there, or rephrase one of the active homework questions, Chatty may still give you a hint instead of the final answer.
 - Home includes a small live chat mirror at the bottom so you can keep working without leaving the page to see the latest reply.
@@ -61,7 +61,9 @@ In plain language:
 
 That is useful for longer tasks because Chatty-EDU is designed to help you keep the workflow moving inside one local app rather than forcing you to juggle lots of separate windows.
 
-## File locations (auto-created under `data/`)
+## File locations
+
+Chatty-EDU creates these folders on first run. In a prebuilt folder, they usually live under `data/` beside `chatty-edu.exe`. If the app was started with `--base-path <path>`, they live under that path instead.
 - `homework/assigned/` - homework packs (`homework_pack_*.json`)
 - `homework/completed/` - your exported submissions (`submission_*.json`)
 - `revision/notes/` - your saved revision notes or progress
@@ -71,7 +73,7 @@ That is useful for longer tasks because Chatty-EDU is designed to help you keep 
 - `config/`, `themes/`, `modules/` - app settings and themes (usually leave these alone)
 
 ## Tips
-- If you change computers, keep the whole `data/` folder with you. Run with `--base-path <USB path>` to force data onto the USB.
+- If you change computers, keep the active data folder with you. Run with `--base-path <USB path>` to force data onto the USB.
 - If the tutor says it cannot give the answer, ask for steps, a starting point, or the rule you need.
 - If your homework refers to a worksheet, list, or table and you cannot see it, tell your teacher the pack may be missing the extra material.
 - If your school uses the Networking tab, that is still local school-network sharing between nearby Chatty-EDU devices, not internet chat.
