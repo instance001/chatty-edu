@@ -151,33 +151,48 @@ pub fn default_base_path() -> PathBuf {
         .join(APP_FOLDER_NAME)
 }
 
-pub fn ensure_base_folders(base: &Path) -> io::Result<()> {
-    let dirs = [
-        base.to_path_buf(),
-        base.join("homework"),
-        base.join("homework").join("assigned"),
-        base.join("homework").join("completed"),
-        base.join("homework").join("outgoing"),
-        base.join("homework").join("marking"),
-        base.join("homework").join("printables"),
-        base.join("homework").join("rubrics"),
-        base.join("revision"),
-        base.join("revision").join("notes"),
-        base.join("revision").join("past_papers"),
-        base.join("modules"),
-        base.join("logs"),
-        base.join("config"),
-        base.join("config").join("bookkeeper"),
-        base.join("runtime"),
-        base.join("themes"),
-        base.join("models"),
-        base.join("Chatty_Sandbox"),
-    ];
+const BASE_FOLDERS: &[&str] = &[
+    "homework",
+    "homework/assigned",
+    "homework/completed",
+    "homework/outgoing",
+    "homework/marking",
+    "homework/printables",
+    "homework/rubrics",
+    "revision",
+    "revision/notes",
+    "revision/past_papers",
+    "revision/received",
+    "modules",
+    "logs",
+    "config",
+    "config/bookkeeper",
+    "runtime",
+    "themes",
+    "models",
+    "Chatty_Sandbox",
+    "Chatty_Sandbox/scratchpad",
+    "network_inbox",
+    "network_inbox/homework_packs",
+    "network_inbox/revision_packs",
+    "network_inbox/workflow_bundles",
+    "network_inbox/lukewarm_context",
+    "network_inbox/applied_lukewarm_context",
+    "network_inbox/file_transfers",
+    "network_inbox/file_transfers/payloads",
+    "network_inbox/imports",
+    "network_inbox/imports/network_transfers",
+    "network_inbox/module_states",
+    "network_recovery",
+    "network_recovery/module_session_payloads",
+    "network_trust_exports",
+];
 
-    for d in dirs {
-        if !d.exists() {
-            fs::create_dir_all(&d)?;
-        }
+pub fn ensure_base_folders(base: &Path) -> io::Result<()> {
+    fs::create_dir_all(base)?;
+
+    for rel in BASE_FOLDERS {
+        fs::create_dir_all(base.join(rel.replace('/', std::path::MAIN_SEPARATOR_STR)))?;
     }
 
     Ok(())
@@ -270,4 +285,31 @@ pub fn save_settings(settings: &Settings, base: &Path) -> io::Result<()> {
         .map_err(|e| io::Error::new(io::ErrorKind::Other, format!("JSON encode error: {e}")))?;
     fs::write(&config_path, json)?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn ensure_base_folders_bootstraps_binary_first_run_layout() {
+        let base =
+            std::env::temp_dir().join(format!("chatty-edu-first-run-test-{}", std::process::id()));
+        if base.exists() {
+            fs::remove_dir_all(&base).unwrap();
+        }
+
+        ensure_base_folders(&base).unwrap();
+
+        assert!(base.is_dir());
+        for rel in BASE_FOLDERS {
+            assert!(
+                base.join(rel.replace('/', std::path::MAIN_SEPARATOR_STR))
+                    .is_dir(),
+                "missing first-run directory: {rel}"
+            );
+        }
+
+        fs::remove_dir_all(&base).unwrap();
+    }
 }

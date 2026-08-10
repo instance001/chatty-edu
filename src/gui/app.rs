@@ -6345,6 +6345,40 @@ impl ChattyApp {
             ("themes", base.join("themes")),
             ("runtime", base.join("runtime")),
             ("logs", base.join("logs")),
+            (
+                "Chatty_Sandbox/scratchpad",
+                base.join("Chatty_Sandbox").join("scratchpad"),
+            ),
+            (
+                "network_inbox/homework_packs",
+                base.join("network_inbox").join("homework_packs"),
+            ),
+            (
+                "network_inbox/revision_packs",
+                base.join("network_inbox").join("revision_packs"),
+            ),
+            (
+                "network_inbox/workflow_bundles",
+                base.join("network_inbox").join("workflow_bundles"),
+            ),
+            (
+                "network_inbox/file_transfers/payloads",
+                base.join("network_inbox")
+                    .join("file_transfers")
+                    .join("payloads"),
+            ),
+            (
+                "network_inbox/imports/network_transfers",
+                base.join("network_inbox")
+                    .join("imports")
+                    .join("network_transfers"),
+            ),
+            (
+                "network_recovery/module_session_payloads",
+                base.join("network_recovery")
+                    .join("module_session_payloads"),
+            ),
+            ("network_trust_exports", base.join("network_trust_exports")),
         ];
 
         out.push_str("Folders:\n");
