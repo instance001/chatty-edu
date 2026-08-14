@@ -1,0 +1,27 @@
+{
+  "module_id": "demo_lesson_studio",
+  "summary": "Lesson Studio is planning for an unnamed class. Goal: a lesson goal that still needs defining. Main lesson blocks: 0. Resources listed: 0. Next bridge: a follow-up task that still needs deciding. Lesson room session: inactive.",
+  "session_id": "",
+  "session_revision": 0,
+  "authoritative_device_id": "",
+  "authoritative_device_name": "",
+  "host_authoritative": false,
+  "payload": {
+    "fields": {
+      "checks_for_understanding": "",
+      "class_name": "",
+      "homework": "",
+      "lesson_goal": "",
+      "main_blocks": "",
+      "resources": "",
+      "success_criteria": "",
+      "teacher_note": "",
+      "warm_up": ""
+    },
+    "metrics": {
+      "blockCount": 0,
+      "resourceCount": 0
+    }
+  },
+  "updated_at_unix_ms": 1786748278372
+}

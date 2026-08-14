@@ -47,6 +47,14 @@ That optional peer mode is only for chatty-edu-to-chatty-edu connections. It doe
    - It is also Chatty-EDU-only peer networking. A nearby ChattyCog machine is not a compatible peer target.
    - Once connected, you can use separate transfer lanes for `Push Pack`, `Push Revision`, and `Push Setup`.
 
+## Screenshots
+
+For a visual tour of the current app shell, see `docs/SCREENSHOTS.md`.
+
+| Teacher Dashboard | Networking |
+| --- | --- |
+| ![Homework Dashboard teacher tools](assets/branding/Screenshot%202026-08-15%20085634.png) | ![Networking tab with local peer controls](assets/branding/Screenshot%202026-08-15%20085512.png) |
+
 ## Homework basics
 - Packs are authored in Markdown (`*.md`) under `homework/outgoing/` and transcribed into JSON packs (`homework_pack_*.json`) under `homework/assigned/`, or you can import JSON directly.
 - Sharing: homework packs are simple files. You can share a pack `.md` or `.json` with other teachers or schools, including any referenced attachments.

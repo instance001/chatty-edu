@@ -1,0 +1,41 @@
+{
+  "version": "1",
+  "source_app": "chatty-edu",
+  "label": "Classroom room",
+  "scope_kind": "general",
+  "scope_module_id": "",
+  "scope_module_name": "",
+  "scope_multiplayer": false,
+  "active_for_module": true,
+  "session_active": false,
+  "session_id": "",
+  "session_revision": 0,
+  "session_label": "",
+  "host_authoritative": false,
+  "turn_mode": "Open",
+  "ai_mode": "Local allowed",
+  "teacher_override": false,
+  "host_device_id": "chatty-edu-desktop-2s8v68v-4228-1786748047824",
+  "host_device_name": "Chatty-EDU on DESKTOP-2S8V68V (4228)",
+  "turn_holder_device_id": "",
+  "turn_holder_device_name": "",
+  "connected_peer_count": 0,
+  "participant_count": 1,
+  "local_device_id": "chatty-edu-desktop-2s8v68v-4228-1786748047824",
+  "local_device_name": "Chatty-EDU on DESKTOP-2S8V68V (4228)",
+  "local_is_host": true,
+  "local_has_turn": true,
+  "host_activity_state": "",
+  "host_activity_label": "",
+  "host_activity_updated_at_unix_ms": 0,
+  "participants": [
+    {
+      "device_id": "chatty-edu-desktop-2s8v68v-4228-1786748047824",
+      "device_name": "Chatty-EDU on DESKTOP-2S8V68V (4228)",
+      "is_local": true,
+      "connected": true
+    }
+  ],
+  "summary": "Open | AI Local allowed | General room | Host Chatty-EDU on DESKTOP-2S8V68V (4228)",
+  "updated_at_unix_ms": 1786748323102
+}

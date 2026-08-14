@@ -1,0 +1,26 @@
+{
+  "module_id": "demo_revision_sprint",
+  "summary": "Revision Sprint is active for an unnamed learner in an unnamed subject. Priority topics: 0. Revision blocks planned: 0. Next question set: the next question set still needs defining.",
+  "session_id": "",
+  "session_revision": 0,
+  "authoritative_device_id": "",
+  "authoritative_device_name": "",
+  "host_authoritative": false,
+  "payload": {
+    "fields": {
+      "confidence_notes": "",
+      "exam_date": "",
+      "next_question_set": "",
+      "priority_topics": "",
+      "revision_blocks": "",
+      "stuck_points": "",
+      "student_name": "",
+      "subject": ""
+    },
+    "metrics": {
+      "blockCount": 0,
+      "topicCount": 0
+    }
+  },
+  "updated_at_unix_ms": 1786748131724
+}

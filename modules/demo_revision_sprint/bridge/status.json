@@ -1,0 +1,20 @@
+{
+  "module_id": "demo_revision_sprint",
+  "summary": "Revision Sprint is active for an unnamed learner in an unnamed subject. Priority topics: 0. Revision blocks planned: 0. Next question set: the next question set still needs defining.",
+  "snapshot": "# Revision Sprint Snapshot\n\n- Learner: not set\n- Subject: not set\n- Exam date: not set\n\n## Priority topics\n(none)\n\n## Stuck points\n(empty)\n\n## Revision blocks\n(none)\n\n## Confidence notes\n(empty)\n\n## Next question set\n(empty)",
+  "event_type": "suspend_rundown",
+  "tags": [
+    "student",
+    "revision",
+    "planning",
+    "webview",
+    "demo"
+  ],
+  "payload": {
+    "blockCount": 0,
+    "learner": "",
+    "subject": "",
+    "topicCount": 0
+  },
+  "updated_at_unix_ms": 1786748131727
+}

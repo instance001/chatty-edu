@@ -25,6 +25,7 @@ Docs:
 - `design_intent.md`
 - `GLOSSARY.md`
 - `CHANGELOG.md`
+- `docs/SCREENSHOTS.md`
 - `docs/MODULES.md`
 - `docs/MODULE_TEMPLATE_CHOOSER.md`
 - `docs/DEMO_MODULES.md`
@@ -54,6 +55,18 @@ Docs:
 - Plain-text-safe rendering: model output is normalized before display so unsupported Unicode, prompt-template markers, and odd table characters degrade into readable text instead of broken glyphs.
 - CLI parity: teacher console can `generate_pack_md`, `transcribe_outgoing`, and `convert_submissions_to_md`.
 - Easier builds: local-model support is optional with `cargo build --no-default-features`.
+
+## Screenshots
+
+For the full screenshot gallery, see `docs/SCREENSHOTS.md`.
+
+| Home | Chat |
+| --- | --- |
+| ![Home tab with assignment details and chat mirror](assets/branding/Screenshot%202026-08-15%20085423.png) | ![Chat tab with memory sidebars](assets/branding/Screenshot%202026-08-15%20085440.png) |
+
+| Teacher Dashboard | Hosted Lesson Studio |
+| --- | --- |
+| ![Homework Dashboard teacher tools](assets/branding/Screenshot%202026-08-15%20085634.png) | ![Lesson Studio demo module](assets/branding/Screenshot%202026-08-15%20085742.png) |
 
 ## School Workflow Map
 

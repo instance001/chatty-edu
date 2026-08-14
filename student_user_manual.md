@@ -28,6 +28,14 @@ That optional peer mode is only for nearby chatty-edu machines. It does not conn
 - On the Chat tab, `Memory jogger` appears on the right and shows short reminders from recent sessions. It stays across restarts.
 - Sidebar entries may shorten inside the narrow panel, but you can hover them to read more.
 
+## Screenshots
+
+For a visual tour of the current app shell, see `docs/SCREENSHOTS.md`.
+
+| Home | Chat |
+| --- | --- |
+| ![Home tab with assignment details and chat mirror](assets/branding/Screenshot%202026-08-15%20085423.png) | ![Chat tab with memory sidebars](assets/branding/Screenshot%202026-08-15%20085440.png) |
+
 ## Revision
 - Revision is separate from live homework. It uses work you have already submitted, plus any past papers your teacher imported.
 - Revision can save your own notes or progress under `revision/notes/`.

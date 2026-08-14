@@ -1,0 +1,41 @@
+[
+  {
+    "name": "classic_light",
+    "surface": "#f5f6fa",
+    "panel": "#ffffff",
+    "text": "#1f2933",
+    "muted_text": "#637588",
+    "accent": "#2b78e4",
+    "accent_soft": "#dfe9ff",
+    "border": "#d0d5dc",
+    "radius": 6.0,
+    "shadow": 8.0,
+    "font_size_base": 16.0
+  },
+  {
+    "name": "chalkboard_dark",
+    "surface": "#1f2a33",
+    "panel": "#15202b",
+    "text": "#e5f0ff",
+    "muted_text": "#9bb2c7",
+    "accent": "#4caf50",
+    "accent_soft": "#23402a",
+    "border": "#2e3c48",
+    "radius": 6.0,
+    "shadow": 10.0,
+    "font_size_base": 16.0
+  },
+  {
+    "name": "high_contrast",
+    "surface": "#000000",
+    "panel": "#0d0d0d",
+    "text": "#ffffff",
+    "muted_text": "#c7c7c7",
+    "accent": "#ffcc00",
+    "accent_soft": "#4d3b00",
+    "border": "#ffffff",
+    "radius": 0.0,
+    "shadow": 4.0,
+    "font_size_base": 18.0
+  }
+]

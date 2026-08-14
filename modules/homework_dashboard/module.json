@@ -11,5 +11,8 @@
     "type": "builtin_panel",
     "target": "homework_dashboard"
   },
-  "order": -100
+  "icon": null,
+  "permissions": [],
+  "order": -100,
+  "network_capabilities": null
 }

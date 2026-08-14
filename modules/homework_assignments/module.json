@@ -1,9 +1,9 @@
 {
   "id": "homework_assignments",
   "title": "Homework & Revision",
+  "description": "View homework questions and revision tips",
   "version": "1.0.0",
   "author": "Chatty-EDU",
-  "description": "View homework questions and revision tips",
   "roles": [
     "teacher",
     "student"
@@ -12,5 +12,8 @@
     "type": "builtin_panel",
     "target": "homework_assignments"
   },
-  "order": -90
+  "icon": null,
+  "permissions": [],
+  "order": -90,
+  "network_capabilities": null
 }

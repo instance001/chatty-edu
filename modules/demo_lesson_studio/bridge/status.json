@@ -1,0 +1,26 @@
+{
+  "module_id": "demo_lesson_studio",
+  "summary": "Lesson Studio is planning for an unnamed class. Goal: a lesson goal that still needs defining. Main lesson blocks: 0. Resources listed: 0. Next bridge: a follow-up task that still needs deciding. Lesson room session: inactive.",
+  "snapshot": "# Lesson Studio Snapshot\n\n- Class: not set\n- Lesson goal: not set\n\n## Success criteria\n(empty)\n\n## Warm-up\n(empty)\n\n## Main lesson blocks\n(none)\n\n## Checks for understanding\n(empty)\n\n## Homework / bridge\n(empty)\n\n## Resources\n(none)\n\n## Teacher note\n(empty)",
+  "event_type": "suspend_rundown",
+  "tags": [
+    "teacher",
+    "lesson",
+    "planning",
+    "webview",
+    "demo",
+    "room_aware"
+  ],
+  "payload": {
+    "blockCount": 0,
+    "className": "",
+    "resourceCount": 0,
+    "room": {
+      "activeForModule": true,
+      "participantCount": 1,
+      "sessionActive": false,
+      "sessionRevision": 0
+    }
+  },
+  "updated_at_unix_ms": 1786748278373
+}
