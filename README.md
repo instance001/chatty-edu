@@ -15,6 +15,15 @@ Designed for schools and boards:
 - Districts can drop in their preferred models; documentation includes guidance for recommended small models, which can be replaced as needed.
 - Works without internet; external processes are disabled unless explicitly allowed.
 
+## Install
+
+- Windows portable zip: <https://github.com/instance001/chatty-edu/releases/download/v0.6/chatty-edu-windows-portable-v0.6.zip>
+- Latest releases: <https://github.com/instance001/chatty-edu/releases>
+- Windows install guide: <https://instance001.github.io/chatty-edu-windows.html>
+- Source code: <https://github.com/instance001/chatty-edu>
+
+Download the Windows portable zip, extract it to a normal folder, then double-click `Run Chatty Edu.bat`. Chatty-EDU does not ship model weights; schools or users can drop approved GGUF models into the `models/` folder when needed.
+
 Design intent and boundaries: see `design_intent.md`. Public-safe sample packs and submission templates live in `resources/`.
 
 Docs:
