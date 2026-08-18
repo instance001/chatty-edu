@@ -5,7 +5,7 @@
 
 ## What this module is for
 
-This is a starter Python department. Replace this with a short description of what your module actually does.
+This is a starter Python module. Replace this with a short description of what your module actually does.
 
 ## Host boundary
 

@@ -41,7 +41,7 @@ This starter is for Chatty-EDU.
 
 - `manifest.json` - discovery
 - `visual_load.json` - host the real UI in a Chatty-EDU tab
-- `HANDSHAKE.md` - human-facing department contract
+- `HANDSHAKE.md` - human-facing module contract
 - `STATE_TEMPLATE.md` - fallback notes if you later remove hosted UI
 - `bridge/.gitkeep` - keeps the bridge folder in place
 - `web/index.html` - standalone UI

@@ -3,7 +3,7 @@
 Copy this file into your module folder (recommended name: `HANDSHAKE.md`) and fill it out.
 
 Purpose:
-- Give Chatty-EDU (and future module runners) a consistent "how to talk to this department" document.
+- Give Chatty-EDU (and future module runners) a consistent "how to talk to this module" document.
 - Provide the human-friendly suspend rundown format you want used for cross-module context.
 - Pair with the optional portable bridge if your module keeps its own standalone UI/state.
 
@@ -18,10 +18,10 @@ Important boundary:
 
 ## What this module is for (required)
 
-Describe the department's purpose in 1-3 sentences.
+Describe the module's purpose in 1-3 sentences.
 
 Example:
-- "This department handles math + proofs + derivations. It prefers rigorous, step-by-step reasoning and explicit assumptions."
+- "This module handles math, proofs, and derivations. It prefers rigorous, step-by-step reasoning and explicit assumptions."
 
 ## Inputs this module expects (required)
 
@@ -69,9 +69,9 @@ Template (fill in):
 > **Next action:** `<1 sentence>`
 > **Artifacts:** `<optional: filenames/paths in Chatty_Sandbox/>`
 
-## Cold log envelope hints (optional)
+## Audit-history envelope hints (optional)
 
-If you (or future tooling) append explicit events to the cold log, use:
+If you (or future tooling) append explicit events to the local audit-history log, use:
 
 - `module_id`: `<your module_id>`
 - `event_type`: `<short stable string, e.g. "experiment", "draft", "decision">`
@@ -91,5 +91,5 @@ See:
 - `chatty-edu/docs/MODULE_BRIDGE_SNIPPETS.md`
 
 Rule of thumb:
-- `HANDSHAKE.md` explains the department to humans
+- `HANDSHAKE.md` explains the module to humans
 - `bridge/status.json` reports the current handoff state to Chatty-EDU

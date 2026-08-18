@@ -122,7 +122,7 @@ No matter which starter you choose, you still get:
 
 - `manifest.json` for discovery
 - `visual_load.json` for hosted visual loading
-- `HANDSHAKE.md` for the human-readable department contract
+- `HANDSHAKE.md` for the human-readable module contract
 - optional `bridge/status.json` for handoff back to Chatty-EDU
 
 Those pieces are there so a module can become part of a compounding workflow, not only a one-off utility tab.

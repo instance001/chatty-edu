@@ -38,8 +38,8 @@ Note: `--mode model-worker` is an internal subprocess mode used to isolate the l
 
 ## Data directories and backup
 All runtime state is stored under the base path (default `./data`):
-- `config/` settings, UI state, and Bookkeeper memory files
-- `config/bookkeeper/` local cold logs plus `memory_jogger.txt`
+- `config/` settings, UI state, and Bookkeeper context files
+- `config/bookkeeper/` local audit-history logs plus `memory_jogger.txt`
 - `homework/outgoing/` teacher-authored pack Markdown (`*.md`)
 - `homework/assigned/` homework packs (`homework_pack_*.json`)
 - `homework/completed/` student submissions (`submission_*.json`)

@@ -48,7 +48,7 @@ Docs:
 - Marking exports: convert `submission_*.json` into `homework/marking/marking_*.md` for review and marking.
 - Paper workflow: optional `### Student Printable` and `### Rubric` or `### Marking Guide` sections in pack Markdown, plus exports to `homework/printables/` and `homework/rubrics/`.
 - Teacher Dashboard AI helper: optionally draft a pack `.md` using the local model, then save and transcribe it.
-- Tri-helix memory surfaces: Chat includes `Chatty's thoughts` on the left for current-session context, `Memory jogger` on the right for persistent recent-session summaries, and a teacher-only Bookkeeper log search view behind the Teacher PIN.
+- Local context surfaces: Chat includes `Chatty's thoughts` on the left for current-session context, `Memory jogger` on the right for persistent recent-session summaries, and a teacher-only Bookkeeper audit-history search view behind the Teacher PIN.
 - Chatty sandbox: `Chatty_Sandbox/` now gives Chatty-EDU a real local scratchpad, task ledger, and approval-gated file tool lane for longer multi-step work without pushing raw file access outside the EDU data folder.
 - Homework-aware chat guardrails: both the Homework hint helper and main Chat intercept active assignment questions and steer the model toward hints instead of answers.
 - Student-facing homework context: Home shows the selected assignment, worksheet or handout content, text attachment previews when available, the submission flow, and a chat mirror.
@@ -97,7 +97,7 @@ flowchart TB
 
     chat --> guardrails["Homework guardrails<br/>hints over direct answers"]
     guardrails --> home
-    chat --> memory["Tri-helix memory<br/>session thoughts, memory jogger, Bookkeeper log"]
+    chat --> memory["Local context surfaces<br/>session thoughts, memory jogger, Bookkeeper log"]
     memory --> chat
 
     shell --> sandbox["Chatty_Sandbox/<br/>approved scratchpad + task ledger"]
@@ -169,8 +169,8 @@ It is about making multi-step educational and creator workflows easier to compou
 Chatty-EDU creates its working folders on first run. In a source checkout, the default base path is the repository root so developer data stays visible. In a packaged binary, the default base path is `data/` beside the executable. Use `--base-path <path>` to make the app use an explicit portable or shared location.
 
 The active base path contains:
-- `config/` - settings, UI state, and Bookkeeper memory files
-- `config/bookkeeper/` - `cold_log.jsonl` plus persistent `memory_jogger.txt`
+- `config/` - settings, UI state, and Bookkeeper context files
+- `config/bookkeeper/` - audit-history `cold_log.jsonl` plus persistent `memory_jogger.txt`
 - `homework/outgoing/` - teacher-authored packs in Markdown (`*.md`) to be transcribed into `homework/assigned/`
 - `homework/assigned/` - homework packs (`homework_pack_*.json`)
 - `homework/completed/` - submissions (`submission_*.json`)
@@ -353,7 +353,7 @@ For Markdown-first packs, `year_level` is the canonical metadata key, but import
 - Content filter (Janet) is enabled by default and operates entirely offline.
 - Optional local networking is LAN-only, off by default, and only activates when a user enables local peer connectivity.
 - Homework packs, submissions, and AI pre-mark outputs are stored locally as readable JSON files.
-- Bookkeeper memory stays local under `config/bookkeeper/`; `Chatty's thoughts` is session-only, while `Memory jogger` persists across sessions as local text.
+- Bookkeeper context/audit files stay local under `config/bookkeeper/`; `Chatty's thoughts` is session-only, while `Memory jogger` persists across sessions as local text.
 - The ECG window reads local Windows performance counters only; it is a local transparency feature and UI health indicator, not telemetry.
 - It exists partly to make activity visible in the room, reinforcing the zero-calls-home design with an always-on local signal that Chatty-EDU is doing work on-device rather than silently sending data elsewhere.
 - There is no telemetry, analytics, logging to third parties, or remote kill-switch.

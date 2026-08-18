@@ -256,8 +256,8 @@ Bundled EDU demo modules also live in `modules/demo_*` so teachers can inspect w
 - For a focused plain-language explanation, see `docs/NETWORKING.md`.
 
 ## Data layout (under `./data` or `--base-path`)
-- `config/` settings, UI state, and Bookkeeper memory files
-- `config/bookkeeper/` cold logs plus `memory_jogger.txt`
+- `config/` settings, UI state, and Bookkeeper context files
+- `config/bookkeeper/` audit-history logs plus `memory_jogger.txt`
 - `Chatty_Sandbox/` scratchpad, task ledger, and sandbox working files
 - `homework/outgoing/` pack Markdown
 - `homework/assigned/` pack JSON
