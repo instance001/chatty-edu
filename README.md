@@ -1,5 +1,7 @@
 # chatty-edu v0.5.0
 
+Chatty-EDU is a local AI venue for learning. Teachers choose the tools, students use them within clear boundaries, and outside services only enter when explicitly allowed.
+
 Offline, local-first learning assistant for schools. No cloud dependency, no accounts, no tracking. Ships as a single Rust binary with an egui desktop shell (Windows first) plus a CLI mode. Licensed under AGPLv3.
 
 chatty-edu never connects to the internet in normal use and does not require external services to function. In this repo, offline-first is a school deployment boundary and trust feature. Across the wider Chatty ecosystem, other tools may offer cloud-optional provider lanes when a user deliberately chooses them.
