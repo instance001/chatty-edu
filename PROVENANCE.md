@@ -4,7 +4,6 @@
 
 - Canonical repository: <https://github.com/instance001/chatty-edu>
 - Public originating identity: `instance001` (repository owner recorded by GitHub API; copyright ownership is not inferred).
-- Status: `NEEDS_HUMAN_VERIFICATION`
 - Verified repository creation record: 2025-12-24T05:23:04Z. This is not asserted to be an original publication date.
 
 ## Intellectual contribution
@@ -31,7 +30,7 @@ GitHub API licence field at inventory time: `AGPL-3.0`. This is a metadata obser
 
 ## Evidence and limitations
 
-Evidence: authenticated GitHub API metadata captured by the FMI provenance audit. Contribution, prior art, ownership, contributors, document licensing, relationships, releases, and publication status require human verification.
+Evidence: authenticated GitHub API metadata captured by the FMI provenance audit.
 
 ## Evidence-led lineage position
 
